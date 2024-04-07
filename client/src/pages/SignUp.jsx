@@ -1,37 +1,69 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import SideBar from "../components/SideBar";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import axios from "axios";
 
 function SignUp() {
+
+  const initialValues = {
+    name: "",
+    employee_no: "",
+    contact_no: "",
+    designation: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Name is required"),
+    employee_no: Yup.string(),
+    contact_no: Yup.string().required("Contact number is required"),
+    designation: Yup.string(),
+    username: Yup.string().required("Username is required").max(25, "Username must be less than 26 characters"),
+    password: Yup.string().required("Password is required").min(8, "Password must be at least 8 characters").max(25, "Password must be less than 26 characters"),
+    confirm_password: Yup.string().required("Confirm password is required"),
+  })
+
+  const onSubmit = (data) => {
+    axios.post("http://localhost:3001/staff", data).then((response) => {   
+      console.log("It worked") ;
+    });
+  };
+
   return (
-    <div className="registerUser">
-      <Formik>
-        <Form>
+    <div className="registerUserPage">
+      <SideBar />
+      <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+        <Form className="formContainer">
           <label>Name</label>
-          <Field 
-            id="inputRegisterUser" 
-            name="name" 
-            placeholder="Name" 
-          />
+          <ErrorMessage name="name" component="span" style={{ color: "red" }} />
+          <Field id="inputRegisterUser" name="name" />
           <label>Employee Number</label>
-          <Field 
-            id="inputRegisterUser" 
-            name="employee_no" 
-            placeholder="Employee Number" 
-          />
+          <ErrorMessage name="employee_no" component="span" style={{ color: "red" }} />
+          <Field id="inputRegisterUser" name="employee_no" />
           <label>Contact Number</label>
-          <Field 
-            id="inputRegisterUser" 
-            name="contact_no" 
-            placeholder="Contact Number"
-          />
+          <ErrorMessage name="contact_no" component="span" style={{ color: "red" }}/>
+          <Field id="inputRegisterUser" name="contact_no" />
           <label>Designation</label>
-          <Field 
-            id="inputRegisterUser" 
-            name="designtion" 
-            placeholder="Designation"
-          />
-          <button type="reset">Clear</button>
+          <ErrorMessage name="designation" component="span" style={{ color: "red" }}/>
+          <Select id="designation" name="designation">
+            <MenuItem value="">Select Designation</MenuItem>
+            <MenuItem value="Manager">Manager</MenuItem>
+            <MenuItem value="Coach">Coach</MenuItem>
+            <MenuItem value="Receptionist">Receptionist</MenuItem>
+            <MenuItem value="InventoryManager">Inventory Manager</MenuItem>
+          </Select>
+          <label>Username</label>
+          <ErrorMessage name="username" component="span" style={{ color: "red" }}/>
+          <Field id="inputRegisterUser" name="username" />
+          <label>Password</label>
+          <ErrorMessage name="password" component="span" style={{ color: "red" }}/>
+          <Field id="inputRegisterUser" name="password" />
+          <label>Confirm Password</label>
+          <ErrorMessage name="confirm_password" component="span" style={{ color: "red" }}/>
+          <Field id="inputRegisterUser" name="confirm_password" />
+          <button type="clear">Clear</button>
           <button type="submit">Register</button>
         </Form>
       </Formik>
@@ -81,15 +113,15 @@ export default SignUp;
 // });
 
 // export default function SignUp() {
-//   const [showPassword, setShowPassword] = React.useState(false);
-//   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+// const [showPassword, setShowPassword] = React.useState(false);
+// const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
-//   const handleClickShowPassword = () => setShowPassword((show) => !show);
-//   const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+// const handleClickShowPassword = () => setShowPassword((show) => !show);
+// const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
 
-//   const handleMouseDownPassword = (event) => {
-//     event.preventDefault();
-//   };
+// const handleMouseDownPassword = (event) => {
+//   event.preventDefault();
+// };
 
 //   const onSubmit = (data) => {
 //     console.log("form submitted",data);
@@ -423,24 +455,24 @@ export default SignUp;
 //                         error={touched.password && Boolean(errors.password)}
 //                         onChange={handleChange}
 //                         onBlur={handleBlur}
-//                         InputProps={{
-//                           endAdornment: (
-//                             <InputAdornment position="end">
-//                               <IconButton
-//                                 aria-label="toggle password visibility"
-//                                 onClick={handleClickShowPassword}
-//                                 onMouseDown={handleMouseDownPassword}
-//                                 edge="end"
-//                               >
-//                                 {showPassword ? (
-//                                   <VisibilityOff />
-//                                 ) : (
-//                                   <Visibility />
-//                                 )}
-//                               </IconButton>
-//                             </InputAdornment>
-//                           ),
-//                         }}
+// InputProps={{
+//   endAdornment: (
+//     <InputAdornment position="end">
+//       <IconButton
+//         aria-label="toggle password visibility"
+//         onClick={handleClickShowPassword}
+//         onMouseDown={handleMouseDownPassword}
+//         edge="end"
+//       >
+//         {showPassword ? (
+//           <VisibilityOff />
+//         ) : (
+//           <Visibility />
+//         )}
+//       </IconButton>
+//     </InputAdornment>
+//   ),
+// }}
 //                       />
 //                     </div>
 

@@ -11,7 +11,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from '@mui/icons-material/Home';
@@ -82,12 +81,13 @@ export default function SideBar() {
             paddingRight: 2,
           }}
         >
-          <MenuIcon onClick={() => setOpen(!open)}>
+          <MenuIcon onClick={() => setOpen(!open)} style={{ color: "#791414" }} >
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
               <ChevronLeftIcon />
             )}
+            
           </MenuIcon>
         </Box>
         <Divider />
@@ -112,6 +112,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <HomeIcon />
               </ListItemIcon>
@@ -138,6 +139,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <GroupIcon />
               </ListItemIcon>
@@ -164,6 +166,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <SportsCricketIcon />
               </ListItemIcon>
@@ -190,6 +193,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <PaidIcon />
               </ListItemIcon>
@@ -216,6 +220,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <AssignmentIcon />
               </ListItemIcon>
@@ -245,6 +250,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <Inventory2Icon />
               </ListItemIcon>
@@ -274,6 +280,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <SummarizeIcon />
               </ListItemIcon>
@@ -300,6 +307,7 @@ export default function SideBar() {
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
                 }}
+                style={{ color: "#791414" }} 
               >
                 <SettingsIcon />
               </ListItemIcon>
