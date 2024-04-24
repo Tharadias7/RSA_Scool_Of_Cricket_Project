@@ -41,3 +41,6 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+db.User.belongsTo(db.Staff, {foreignKey: 'employee_no'});
+db.Staff.hasOne(db.User, {foreignKey: 'employee_no'});

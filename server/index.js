@@ -17,7 +17,9 @@ app.use("/user", userRouter);
 const staffRouter = require("./routes/Staff");  
 app.use("/staff", staffRouter);
 
+//whenever we run the server, we want to sync(check if all the models in model folder are there, if not create them) the database
 db.sequelize.sync().then(() => {
+  //API
   app.listen(3001, () => {
     console.log("Server is running on port 3001");
   });

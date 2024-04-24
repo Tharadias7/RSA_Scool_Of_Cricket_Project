@@ -7,7 +7,7 @@ function Staff() {
   const [listOfUsers, setListOfUsers] = useState([]); 
 
   React.useEffect(() => {
-    axios.get("http://localhost:3001/user").then((response) => {   
+    axios.get("http://localhost:3001/staff").then((response) => {   
       setListOfUsers(response.data); 
     });
   } , []);
