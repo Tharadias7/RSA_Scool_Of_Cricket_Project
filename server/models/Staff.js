@@ -1,7 +1,7 @@
-const { Sequelize } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
-module.exports = (Sequelize, DataTypes) => {
-    const Staff = Sequelize.define('Staff', {
+module.exports = (sequelize) => {
+    const Staff = sequelize.define('Staff', {
         employee_no: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -19,9 +19,7 @@ module.exports = (Sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },  
-
     });
 
     return Staff;
-
 };
