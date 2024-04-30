@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { Staff } = require("../models"); 
-const { getNextEmployeeNo } = require("../utils/signUpUtil"); 
+const { Staff } = require("../models"); // Import the Staff model
+const { getNextEmployeeNo } = require("../utils/signUpUtil");
 
 router.get("/", async (req, res) => {
   const listOfStaff = await Staff.findAll();

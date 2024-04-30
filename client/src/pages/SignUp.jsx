@@ -51,11 +51,13 @@ function SignUp() {
       designation: des,
     };
 
+    console.log("User Data: ", staffData);
+
     axios
       .post("http://localhost:3001/staff", staffData)
       .then((response) => {
         console.log("staff created");
-        return axios.post("http://localhost:3001/user", userData);
+      return axios.post("http://localhost:3001/user", userData);
       })
       .then((response) => {
         console.log("user created");
