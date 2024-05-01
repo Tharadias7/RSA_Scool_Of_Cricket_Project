@@ -1,5 +1,4 @@
 const { Sequelize } = require("sequelize");
-
 module.exports = (Sequelize, DataTypes) => {    
     const User = Sequelize.define('User', {
         username: {
@@ -16,11 +15,14 @@ module.exports = (Sequelize, DataTypes) => {
             allowNull: false
         },
         employee_no: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
+            references: {
+                model: "Staffs",
+                key: "employee_no",
+              },
         },
-
-        
     });
 
     return User;
+  
 };

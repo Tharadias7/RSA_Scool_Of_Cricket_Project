@@ -5,22 +5,18 @@ import SideBar from "../components/SideBar";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
-
 function SignUp() {
-  const [des, setDes] = React.useState("");
-
+  const [des, setDes] = React.useState('');
   const handleSelectChange = (event) => {
-    console.log("ID  " + event.target.id);
+    console.log("ID  "+event.target.id);
     setDes(event.target.id);
-  };
-
+  }
   const initialValues = {
     name: "",
     employee_no: "",
     contact_no: "",
     designation: "",
   };
-
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     employee_no: Yup.string(),
@@ -36,35 +32,30 @@ function SignUp() {
     confirm_password: Yup.string().required("Confirm password is required"),
   });
 
-  const onSubmit = (data) => {
-    const userData = {
-      username: data.username,
-      password: data.password,
-      role: des,
-      employee_no: data.employee_no,
-    };
+    const onSubmit = (data) => {
 
-    const staffData = {
-      name: data.name,
-      employee_no: data.employee_no,
-      contact_no: data.contact_no,
-      designation: des,
-    };
-
-    console.log("User Data: ", staffData);
-
-    axios
-      .post("http://localhost:3001/staff", staffData)
-      .then((response) => {
-        console.log("staff created");
-      return axios.post("http://localhost:3001/user", userData);
-      })
-      .then((response) => {
-        console.log("user created");
-      })
-      .catch((error) => {
-        console.log("Error creating user or staff", error);
-      });
+      const userData = {
+        "username": data.username,  
+        "password": data.password,
+        "role": des,
+        "employee_no": data.employee_no,
+      };
+      const staffData = {
+        "name": data.name,
+        "employee_no": data.employee_no,
+        "contact_no": data.contact_no,
+        "designation": des,
+      };
+      axios.post("http://localhost:3001/staff",  staffData).then((response) => {
+          console.log("staff created");
+          return axios.post("http://localhost:3001/user", userData);
+        })
+        .then((response) => {
+          console.log("user created");
+        })
+        .catch((error) => {
+          console.log("Error creating user or staff", error);
+        });
   };
 
   return (
@@ -79,7 +70,13 @@ function SignUp() {
           <label>Name</label>
           <ErrorMessage name="name" component="span" style={{ color: "red" }} />
           <Field id="inputRegisterUser" name="name" />
-
+          <label>Employee Number</label>
+          <ErrorMessage
+            name="employee_no"
+            component="span"
+            style={{ color: "red" }}
+          />
+          <Field id="inputRegisterUser" name="employee_no" />
           <label>Contact Number</label>
           <ErrorMessage
             name="contact_no"
@@ -94,35 +91,12 @@ function SignUp() {
             style={{ color: "red" }}
           />
           <Select id="designation" name="designation">
-            <MenuItem value="">Select Designation</MenuItem>
-            <MenuItem id="manager" value="Manager" onClick={handleSelectChange}>
-              Manager
-            </MenuItem>
-            <MenuItem id="coach" value="Coach" onClick={handleSelectChange}>
-              Coach
-            </MenuItem>
-            <MenuItem
-              id="receptionist"
-              value="Receptionist"
-              onClick={handleSelectChange}
-            >
-              Receptionist
-            </MenuItem>
-            <MenuItem
-              id="inventoryManager"
-              value="InventoryManager"
-              onClick={handleSelectChange}
-            >
-              Inventory Manager
-            </MenuItem>
+            <MenuItem value="" >Select Designation</MenuItem>
+            <MenuItem id = "manager" value="Manager" onClick={handleSelectChange}>Manager</MenuItem>
+            <MenuItem id = "coach" value="Coach" onClick={handleSelectChange}>Coach</MenuItem>
+            <MenuItem id = "receptionist" value="Receptionist" onClick={handleSelectChange}>Receptionist</MenuItem>
+            <MenuItem id = "inventoryManager" value="InventoryManager" onClick={handleSelectChange}>Inventory Manager</MenuItem>
           </Select>
-          <label>Employee Number</label>
-          <ErrorMessage
-            name="employee_no"
-            component="span"
-            style={{ color: "red" }}
-          />
-          <Field id="inputRegisterUser" name="employee_no" />
           <label>Username</label>
           <ErrorMessage
             name="username"

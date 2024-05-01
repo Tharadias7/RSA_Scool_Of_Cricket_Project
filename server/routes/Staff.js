@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { Staff } = require("../models"); // Import the Staff model
-const { getNextEmployeeNo } = require("../utils/signUpUtil");
+const { Staff } = require("../models"); 
+const { getNextEmployeeNo } = require("../utils/signUpUtil"); 
 
 router.get("/", async (req, res) => {
   const listOfStaff = await Staff.findAll();
@@ -9,23 +9,12 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, contact_no, designation } = req.body;
-
-  try {
-    const employeeNo = await getNextEmployeeNo(designation);
-    const staff = await Staff.create({
-      name,
-      contact_no,
-      designation,
-      employee_no: employeeNo,
-    });
-
-    res.status(201).json(staff);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+  const designation = req.body.designation;
+  const employeeNo = await getNextEmployeeNo(designation);
+  const staff = { ...req.body, employee_no: employeeNo };
+  console.table(staff);
+  await Staff.create(staff);
+  res.json(staff);
 });
 
-
 module.exports = router;
-
