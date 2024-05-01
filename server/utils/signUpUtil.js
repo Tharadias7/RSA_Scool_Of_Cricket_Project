@@ -7,7 +7,7 @@ async function getNextEmployeeNo(designation) {
       order: [['employee_no', 'DESC']],
       limit: 1,
     });
-
+    // just a comment
     let nextNo = 1;
     if (staffs.length > 0) {
       const lastNo = parseInt(staffs[0].employee_no.substring(1));
