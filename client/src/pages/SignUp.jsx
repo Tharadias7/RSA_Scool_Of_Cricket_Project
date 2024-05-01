@@ -33,6 +33,12 @@ function SignUp() {
   });
 
     const onSubmit = (data) => {
+      // const userRoleMapping = {
+      //   Manager: "admin",
+      //   Receptionist: "receptionist",
+      //   InventoryManager: "inventory_manager",
+      //   Coach: "coach",
+      // };
 
       const userData = {
         "username": data.username,  
@@ -56,6 +62,10 @@ function SignUp() {
         .catch((error) => {
           console.log("Error creating user or staff", error);
         });
+
+    // axios.post("http://localhost:3001/staff", data).then((response) => {
+    //   console.log("It worked") ;
+    // });
   };
 
   return (

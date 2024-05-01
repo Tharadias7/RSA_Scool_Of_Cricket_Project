@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
     const Staff = sequelize.define('Staff', {
         employee_no: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true
         },
