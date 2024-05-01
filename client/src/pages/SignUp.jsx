@@ -5,9 +5,7 @@ import SideBar from "../components/SideBar";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
-
 function SignUp() {
-
   const [des, setDes] = React.useState('');
   const handleSelectChange = (event) => {
     console.log("ID  "+event.target.id);
@@ -19,7 +17,6 @@ function SignUp() {
     contact_no: "",
     designation: "",
   };
-
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     employee_no: Yup.string(),
@@ -44,19 +41,17 @@ function SignUp() {
       // };
 
       const userData = {
-        "username": data.username,
+        "username": data.username,  
         "password": data.password,
         "role": des,
         "employee_no": data.employee_no,
       };
-
       const staffData = {
         "name": data.name,
         "employee_no": data.employee_no,
         "contact_no": data.contact_no,
         "designation": des,
       };
-
       axios.post("http://localhost:3001/staff",  staffData).then((response) => {
           console.log("staff created");
           return axios.post("http://localhost:3001/user", userData);

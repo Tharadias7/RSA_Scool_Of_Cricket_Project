@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-
 module.exports = (sequelize) => {
     const Staff = sequelize.define('Staff', {
         employee_no: {
@@ -20,6 +19,5 @@ module.exports = (sequelize) => {
             allowNull: false
         },  
     });
-
     return Staff;
 };
