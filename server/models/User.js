@@ -15,7 +15,7 @@ module.exports = (Sequelize, DataTypes) => {
             allowNull: false
         },
         employee_no: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
         },
 
         
