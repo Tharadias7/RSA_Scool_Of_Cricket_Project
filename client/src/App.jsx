@@ -7,7 +7,7 @@ import Home from "./pages/admin/Home";
 function App() {
   return <div className="App">
     <Router>
-    <Link to="/SignUp">Register Staff</Link>
+    
       <Routes>
         <Route path="/" exact Component={Home}/>
         <Route path="/staff" exact Component={Staff}/>
