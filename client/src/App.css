@@ -11,49 +11,15 @@ body {
   margin: 0;
   padding: 0;
 }
+/* STAFF PAGE CSS*/
 
-.user {
-  width: 400px;
-  height: 300px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  margin-top: 50px;
-  border: 1px solid lightgray;
-  font-family: Arial, Helvetica, sans-serif;
-
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+.button {
+  color: #791414 !important;
+  border-color: #791414 !important;
 }
 
-.user:hover {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  cursor: pointer;
-}
-.user .title {
-  flex: 20%;
-  border-bottom: 1px solid lightgray;
-  background-color: dodgerblue;
-  display: grid;
-  place-content: center;
-  color: white;
-}
-
-.user .body {
-  flex: 60%;
-  display: grid;
-  place-content: center;
-}
-
-.user .footer {
-  flex: 20%;
-  border-top: 1px solid lightgray;
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  background-color: dodgerblue;
-  color: white;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+.button.button-margin-right {
+  margin-right: 20px;
 }
 
 /* REGISTER USER PAGE CSS */
