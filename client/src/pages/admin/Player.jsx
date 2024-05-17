@@ -84,7 +84,7 @@ function Player() {
           >
             Delete
           </Button>
-          {/* <Link to="/qrGeneration" style={{ textDecoration: "none" }}> */}
+          <Link to="/qrGeneration" style={{ textDecoration: "none" }}>
           <Button
             className="button"
             variant="outlined"
@@ -92,7 +92,7 @@ function Player() {
           >
           QR Code
           </Button>
-          {/* </Link> */}
+          </Link>
         </div>
         <div style={{ height: 400, width: "auto", margin: "20px"}}>
           <DataGrid

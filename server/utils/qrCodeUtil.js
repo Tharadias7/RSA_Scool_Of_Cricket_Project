@@ -1,7 +1,7 @@
-const QRCode = require('react-qr-code');
+// const QRCode = require('react-qr-code');
 
-function qrCodeGenerate({ playerId }) {
-      <QRCode value={playerId} />
-}
+// function qrCodeGenerate({ playerId }) {
+//       <QRCode value={playerId} />
+// }
 
-export default qrCodeGenerate
+// export default qrCodeGenerate

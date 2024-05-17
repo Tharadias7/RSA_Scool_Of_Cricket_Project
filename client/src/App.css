@@ -1,3 +1,7 @@
+* {
+  margin: 0;
+  padding: 0;
+}
 .App {
   width: 100vw;
   height: auto;
@@ -55,7 +59,7 @@ body {
   justify-content: center;
   width: 500px;
   height: auto;
-  padding: 20px; 
+  padding: 20px;
   border-radius: 5px;
 }
 
@@ -98,8 +102,72 @@ msg {
 
 .qrCodePage {
   font-family: "Roboto", sans-serif;
-  background-color: #1c2028;
+  width: 100vw;
   min-height: 100vh;
   display: grid;
   place-items: center;
+}
+
+.qrTitle {
+  font-size: 36px;
+  font-weight: 500;
+  margin: 10px;
+  color: #fff;
+}
+
+.qrForm {
+  background-color: #2f3542;
+  color: #333;
+  width: 500px;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.qrInput {
+  align-self: center;
+  height: 40px;
+  width: 50%;
+  margin-bottom: 20px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding-left: 10px;
+  font-size: 20px;
+}
+
+.qrButton {
+  height: 40px;
+  width: 30%;
+  align-self: center;
+  background-color: #791414 !important;
+  border-radius: 5px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.qrButton:hover {
+  cursor: pointer;
+  background-color: #ffffff !important;
+  border: 2px solid #791414;
+  color: #791414;
+}
+
+.qrCodeContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.qrError {
+  color: #fc0303;
+  margin-bottom: 20px;
+  font-size: 20px;
+  border: 1px solid #fc0303;
+  border-radius: 5px;
+  padding: 5px;
 }

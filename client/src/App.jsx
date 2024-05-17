@@ -5,7 +5,9 @@ import SignUp from "./pages/SignUp";
 import Home from "./pages/admin/Home";
 import Player from "./pages/admin/Player"; 
 import playerRegistration from "./pages/admin/playerRegistration";
-import Attendance from "./pages/admin/Attendance"; 
+import Attendance from "./pages/admin/Attendance";
+import qrGeneration from "./pages/admin/qrGeneration";
+
 
 function App() {
   return <div className="App">
@@ -17,7 +19,8 @@ function App() {
         <Route path="/SignUp" exact Component={SignUp}/>  
         <Route path="/player" exact Component={Player}/> 
         <Route path="/playerRegistration" exact Component={playerRegistration}/>
-        <Route path="/attendance" exact Component={Attendance}/> 
+        <Route path="/attendance" exact Component={Attendance}/>
+        <Route path="/qrGeneration" exact Component={qrGeneration}/> 
       </Routes>
     </Router>
   </div>
