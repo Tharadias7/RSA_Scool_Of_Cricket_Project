@@ -158,6 +158,7 @@ msg {
 
 .qrCodeContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
@@ -170,4 +171,15 @@ msg {
   border: 1px solid #fc0303;
   border-radius: 5px;
   padding: 5px;
+}
+
+.qrPrintButton{
+  height: 40px;
+  width: 80px;
+  align-self: center;
+  margin-top: 20px;
+  background-color: #ffffff !important;
+  border-radius: 5px;
+  color: black;
+  margin-bottom: 20px;
 }
