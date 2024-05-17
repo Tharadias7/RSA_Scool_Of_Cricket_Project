@@ -1,0 +1,23 @@
+const { DataTypes } = require("sequelize");
+
+module.exports = (sequelize) => {
+  const Coach = sequelize.define("Coach", {
+    employee_no: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+      },
+    qualifications: {
+      type: DataTypes.STRING,
+      // allowNull: false,
+    },
+    assigned_team: {
+      type: DataTypes.STRING,
+      // allowNull: false,
+    },
+  }, {
+    timestamps: false,
+  });
+
+  return Coach;
+};
