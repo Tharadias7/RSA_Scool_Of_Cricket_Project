@@ -13,3 +13,5 @@ export default function Settings() {
           </Box>
       </Box>
     </>
+    );
+  }

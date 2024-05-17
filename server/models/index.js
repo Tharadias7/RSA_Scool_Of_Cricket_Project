@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
@@ -37,10 +38,19 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// Define associations between User and Staff models
+db.User.belongsTo(db.Staff, { foreignKey: 'employee_no' });
+db.Staff.hasOne(db.User, { foreignKey: 'employee_no' });
+
+
+const Coach = require('./coachModel')(sequelize, Sequelize.DataTypes);
+db['Coach'] = Coach;
+
+// Define associations between Coach and Staff models
+db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no' });
+db.Staff.hasOne(db.Coach, { foreignKey: 'employee_no' });
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
-
-db.User.belongsTo(db.Staff, {foreignKey: 'employee_no'});
-db.Staff.hasOne(db.User, {foreignKey: 'employee_no'});

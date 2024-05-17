@@ -1,7 +1,6 @@
 import React from "react";
 import SideBar from "../../components/SideBar";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 export default function Payments() {
   return (

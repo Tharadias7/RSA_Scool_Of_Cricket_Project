@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const cors = require("cors"); 
+const cors = require("cors");
 
 app.use(express.json());
 app.use(cors());
@@ -14,8 +14,16 @@ const userRouter = require("./routes/User");
 app.use("/user", userRouter);
 
 //staff router
-const staffRouter = require("./routes/Staff");  
+const staffRouter = require("./routes/Staff");
 app.use("/staff", staffRouter);
+
+//coach router
+const coachRouter = require("./routes/coachRoute");
+app.use("/coach", coachRouter);
+
+//player router
+const playerRouter = require("./routes/playerRoute");
+app.use("/player", playerRouter);
 
 //whenever we run the server, we want to sync(check if all the models in model folder are there, if not create them) the database
 db.sequelize.sync().then(() => {
