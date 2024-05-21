@@ -25,6 +25,10 @@ app.use("/coach", coachRouter);
 const playerRouter = require("./routes/playerRoute");
 app.use("/player", playerRouter);
 
+//attendance router
+const attendanceRouter = require("./routes/attendanceRoute");
+app.use("/attendance", attendanceRouter);
+
 //whenever we run the server, we want to sync(check if all the models in model folder are there, if not create them) the database
 db.sequelize.sync().then(() => {
   //API

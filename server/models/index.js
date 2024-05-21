@@ -50,6 +50,14 @@ db['Coach'] = Coach;
 db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no' });
 db.Staff.hasOne(db.Coach, { foreignKey: 'employee_no' });
 
+// Define associations between Player and Attendance models
+db.Attendance.belongsTo(db.Player, { foreignKey: 'playerId' });
+db.Player.hasMany(db.Attendance, { foreignKey: 'playerId' });
+
+// Define associations between Player and Coach models
+db.Player.belongsTo(db.Coach, { foreignKey: 'employee_no' });
+db.Coach.hasMany(db.Player, { foreignKey: 'employee_no' });
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

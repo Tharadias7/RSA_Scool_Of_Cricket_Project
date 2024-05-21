@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import '../../App.css';
 import { Link } from 'react-router-dom';
 
 

@@ -13,7 +13,7 @@ function playerRegistration() {
     date_of_birth: "",
     contact_no: "",
     address: "",
-    assigned_team: "",
+    employee_no: "",
     joined_date: "",
   };
 
@@ -22,7 +22,7 @@ function playerRegistration() {
     date_of_birth: Yup.date().required("Date of birth is required"),
     contact_no: Yup.string().required("Contact number is required"),
     address: Yup.string().required("Address is required"),
-    assigned_team: Yup.string().required("Assigned team is required"),
+    employee_no: Yup.string().required("Assigned coach is required"),
     joined_date: Yup.date().required("Joined date is required"),
   });
 
@@ -31,7 +31,7 @@ function playerRegistration() {
       setSubmitting(true);
 
       const response = await axios.post("http://localhost:3001/player", data);
-      console.log("Player created successfully", response?.data ??"");
+      console.log("Player created successfully", response?.data ??"Couldn't get response data");
 
       // Show success message using SweetAlert2
       Swal.fire({
@@ -115,13 +115,13 @@ function playerRegistration() {
             />
             <Field id="inputRegisterUser" name="address" />
 
-            <label>Assigned Team</label>
+            <label>Assigned Coach</label>
             <ErrorMessage
-              name="assigned_team"
+              name="employee_no"
               component="span"
               style={{ color: "red" }}
             />
-            <Field id="inputRegisterUser" name="assigned_team" />
+            <Field id="inputRegisterUser" name="employee_no" />
 
             <label>Joined Date</label>
             <ErrorMessage
@@ -132,6 +132,7 @@ function playerRegistration() {
             <Field type="date" id="inputRegisterUser" name="joined_date" />
 
             <div className="button-container">
+            
               <button type="submit" style={{ width: "50%" }}>
                 Register
               </button>

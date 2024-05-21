@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const designation = req.body.designation;
-  const employeeNo = await getNextEmployeeNo(designation);
+  const employeeNo = await getNextEmployeeNo(designation); //generate emp no
   const staff = { ...req.body, employee_no: employeeNo };
   console.table(staff);
   await Staff.create(staff);
