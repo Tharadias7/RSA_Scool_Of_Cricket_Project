@@ -3,10 +3,9 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   const Player = sequelize.define("Player", {
     playerId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -24,9 +23,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    assigned_team: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    employee_no: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     joined_date: {
       type: DataTypes.DATEONLY,

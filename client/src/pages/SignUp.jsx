@@ -91,7 +91,7 @@ function SignUp() {
         title: "Success",
         iconColor: "green",
         confirmButtonColor: "#791414",
-        text: "Player registration successful",
+        text: "Staff registration successful",
       });
     } catch (error) {
       console.log("Error creating user or staff", error);
@@ -101,7 +101,7 @@ function SignUp() {
         icon: "error",
         title: "Error",
         confirmButtonColor: "#791414",
-        text: "Player registration failed",
+        text: "Staff registration failed",
       });
     } finally {
       setSubmitting(false);

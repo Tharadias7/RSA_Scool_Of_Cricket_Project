@@ -25,7 +25,7 @@ function Player() {
     { field: "date_of_birth", headerName: "Date of Birth", width: 150 },
     { field: "contact_no", headerName: "Contact Number", width: 150 },
     { field: "address", headerName: "Address", width: 250 },
-    { field: "assigned_team", headerName: "Assigned Team", width: 150 },
+    { field: "employee_no", headerName: "Assigned Coach", width: 150 },
     { field: "joined_date", headerName: "Joined Date", width: 150 },
   ];
 
@@ -48,6 +48,7 @@ function Player() {
           alignItems: "center",
           justifyContent: "center", 
           marginLeft:"20px",
+          overflow: "hidden",
         }}
       >
         <div

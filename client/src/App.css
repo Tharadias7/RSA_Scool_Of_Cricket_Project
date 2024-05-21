@@ -27,11 +27,6 @@ body {
 }
 
 /* REGISTER USER PAGE CSS */
-* {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
 
 .logo-container {
   display: flex;
@@ -182,4 +177,11 @@ msg {
   border-radius: 5px;
   color: black;
   margin-bottom: 20px;
+}
+
+// ATTENDANCE PAGE CSS
+
+.dataGridContainer {
+  width: 100vw;
+  overflow-x: auto;
 }

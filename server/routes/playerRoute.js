@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router(); 
 const { Player } = require('../models');
+const { generatePlayerId } = require('../utils/playerUtil');
 
 
 // Get all the players
@@ -24,7 +25,8 @@ router.get("/:id", async (req, res) => {
 
 // Create a new player
 router.post("/", async (req, res) => {
-    const player = req.body;
+  const playerId = generatePlayerId(); // Generate a unique player ID
+  const player = { ...req.body, playerId: playerId };
     console.table(player);
     await Player.create(player);
     res.json(player);

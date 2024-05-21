@@ -34,7 +34,7 @@ export default function qrGeneration() {
     } catch (error) {
       console.error(error);
       setQrCodeValue("");
-      setErrorMessage("Not a valid player ID");
+      setErrorMessage("Invalid player ID");
     }
 
     setSubmitting(false);

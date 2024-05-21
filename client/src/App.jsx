@@ -7,6 +7,8 @@ import Player from "./pages/admin/Player";
 import playerRegistration from "./pages/admin/playerRegistration";
 import Attendance from "./pages/admin/Attendance";
 import qrGeneration from "./pages/admin/qrGeneration";
+import Inventory from "./pages/admin/Inventory";
+import takeAttendance from "./pages/admin/takeAttendance";
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route path="/playerRegistration" exact Component={playerRegistration}/>
         <Route path="/attendance" exact Component={Attendance}/>
         <Route path="/qrGeneration" exact Component={qrGeneration}/> 
+        <Route path="/inventory" exact Component={Inventory}/>
+        <Route path="/takeAttendance" exact Component={takeAttendance}/>
       </Routes>
     </Router>
   </div>
