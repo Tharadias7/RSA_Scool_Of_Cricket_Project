@@ -12,22 +12,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get attendance by playerId
-// router.get("/:playerId", async (req, res) => {
-//   const playerId = req.params.playerId;
-
-//   try {
-//     const attendance = await Attendance.findByPk(playerId);
-
-//     if (!attendance) {
-//       return res.status(404).json({ message: "Attendance not found" });
-//     }
-
-//     res.json(attendance);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
 
 // Create a new attendance record
 router.post("/", async (req, res) => {
@@ -41,13 +25,5 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  const designation = req.body.designation;
-  const employeeNo = await getNextEmployeeNo(designation); //generate emp no
-  const staff = { ...req.body, employee_no: employeeNo };
-  console.table(staff);
-  await Staff.create(staff);
-  res.json(staff);
-});
 
 module.exports = router;
