@@ -9,6 +9,7 @@ import Attendance from "./pages/admin/Attendance";
 import qrGeneration from "./pages/admin/qrGeneration";
 import Inventory from "./pages/admin/Inventory";
 import takeAttendance from "./pages/admin/takeAttendance";
+import Payment from "./pages/admin/Payment";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/qrGeneration" exact Component={qrGeneration}/> 
         <Route path="/inventory" exact Component={Inventory}/>
         <Route path="/takeAttendance" exact Component={takeAttendance}/>
+        <Route path="/payment" exact Component={Payment}/>
       </Routes>
     </Router>
   </div>

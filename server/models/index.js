@@ -58,6 +58,10 @@ db.Player.hasMany(db.Attendance, { foreignKey: 'playerId' });
 db.Player.belongsTo(db.Coach, { foreignKey: 'employee_no' });
 db.Coach.hasMany(db.Player, { foreignKey: 'employee_no' });
 
+// Define associations between Player and Payments models
+db.Payment.belongsTo(db.Player, { foreignKey: 'playerId' });
+db.Player.hasMany(db.Payment, { foreignKey: 'playerId' });
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
