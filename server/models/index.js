@@ -2,9 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const Sequelize = require('sequelize');
-const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
@@ -17,8 +15,7 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-fs
-  .readdirSync(__dirname)
+fs.readdirSync(__dirname)
   .filter(file => {
     return (
       file.indexOf('.') !== 0 &&
@@ -38,29 +35,27 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-// Define associations between User and Staff models
-db.User.belongsTo(db.Staff, { foreignKey: 'employee_no' });
-db.Staff.hasOne(db.User, { foreignKey: 'employee_no' });
+// Define associations between models
+db.Equipment.hasMany(db.Lendings, { foreignKey: 'stockId' });
+db.Lendings.belongsTo(db.Equipment, { foreignKey: 'stockId' });
 
+db.Coach.hasMany(db.Lendings, { foreignKey: 'employee_no' });
+db.Lendings.belongsTo(db.Coach, { foreignKey: 'employee_no' });
 
-const Coach = require('./coachModel')(sequelize, Sequelize.DataTypes);
-db['Coach'] = Coach;
-
-// Define associations between Coach and Staff models
-db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no' });
-db.Staff.hasOne(db.Coach, { foreignKey: 'employee_no' });
-
-// Define associations between Player and Attendance models
-db.Attendance.belongsTo(db.Player, { foreignKey: 'playerId' });
-db.Player.hasMany(db.Attendance, { foreignKey: 'playerId' });
-
-// Define associations between Player and Coach models
-db.Player.belongsTo(db.Coach, { foreignKey: 'employee_no' });
 db.Coach.hasMany(db.Player, { foreignKey: 'employee_no' });
+db.Player.belongsTo(db.Coach, { foreignKey: 'employee_no' });
 
-// Define associations between Player and Payments models
-db.Payment.belongsTo(db.Player, { foreignKey: 'playerId' });
+db.Player.hasMany(db.Attendance, { foreignKey: 'playerId' });
+db.Attendance.belongsTo(db.Player, { foreignKey: 'playerId' });
+
 db.Player.hasMany(db.Payment, { foreignKey: 'playerId' });
+db.Payment.belongsTo(db.Player, { foreignKey: 'playerId' });
+
+db.Staff.hasOne(db.User, { foreignKey: 'employee_no' });
+db.User.belongsTo(db.Staff, { foreignKey: 'employee_no' });
+
+db.Staff.hasOne(db.Coach, { foreignKey: 'employee_no' });
+db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no' });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

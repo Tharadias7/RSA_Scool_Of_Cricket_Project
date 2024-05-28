@@ -7,36 +7,67 @@ app.use(cors());
 
 const db = require("./models");
 
-//ROUTERS
+// Define the database synchronization function
+async function syncDatabase() {
+  try {
+    await db.sequelize.authenticate();
+    console.log('Connection has been established successfully.');
 
-//user router
+    // Sync models in order
+    await db.Staff.sync();
+    await db.Equipment.sync();
+    await db.Coach.sync();
+    await db.Player.sync();
+    await db.Attendance.sync();
+    await db.Payment.sync();
+    await db.Lendings.sync();
+
+    console.log('All models were synchronized successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
+
+// Routers
+
+// user router
 const userRouter = require("./routes/User");
 app.use("/user", userRouter);
 
-//staff router
+// staff router
 const staffRouter = require("./routes/Staff");
 app.use("/staff", staffRouter);
 
-//coach router
+// coach router
 const coachRouter = require("./routes/coachRoute");
 app.use("/coach", coachRouter);
 
-//player router
+// player router
 const playerRouter = require("./routes/playerRoute");
 app.use("/player", playerRouter);
 
-//attendance router
+// attendance router
 const attendanceRouter = require("./routes/attendanceRoute");
 app.use("/attendance", attendanceRouter);
 
-//payment router
+// payment router
 const paymentRouter = require("./routes/paymentRoute");
 app.use("/payment", paymentRouter);
 
-//whenever we run the server, we want to sync(check if all the models in model folder are there, if not create them) the database
-db.sequelize.sync().then(() => {
-  //API
+// equipment router
+const equipmentRouter = require("./routes/equipmentRoute");
+app.use("/equipment", equipmentRouter);
+
+// lendings router
+const lendingsRouter = require("./routes/lendingRoute");
+app.use("/lending", lendingsRouter);
+
+// Sync the database before starting the server
+syncDatabase().then(() => {
+  // API
   app.listen(3001, () => {
     console.log("Server is running on port 3001");
   });
+}).catch((error) => {
+  console.error("Failed to sync database:", error);
 });

@@ -8,15 +8,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
-// Define months and weeks
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-// Generate columns dynamically
 const columns = [
   { field: 'playerId', headerName: 'Player ID', width: 150, headerClassName: 'super-app-theme--header' },
   { field: 'assignedCoach', headerName: 'Assigned Coach', width: 150, headerClassName: 'super-app-theme--header' },
@@ -25,14 +23,18 @@ const columns = [
       field: `${month.slice(0, 3)}W${week + 1}`,
       headerName: `${month.slice(0, 3)}-W${week + 1}`,
       width: 75,  // Adjust width as needed
-      headerClassName: 'super-app-theme--header'
+      headerClassName: 'super-app-theme--header',
+      renderCell: (params) => (
+        <div style={{ color: params.value === true ? 'green' : 'inherit' }}>
+          {params.value === true ? 'Present' : params.value}
+        </div>
+      )
     }))
   ))
 ];
 
-// Function to determine the week based on the date
 const getWeekField = (date) => {
-  const month = date.getMonth(); // 0-based
+  const month = date.getMonth();
   const day = date.getDate();
   let week = '';
 
@@ -45,7 +47,6 @@ const getWeekField = (date) => {
   return `${months[month].slice(0, 3)}${week}`;
 };
 
-// Custom header styling
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   '& .MuiDataGrid-columnHeaders': {
     backgroundColor: theme.palette.primary.main,
@@ -55,14 +56,13 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
 
 export default function DataGridDemo() {
   const [rows, setRows] = useState([]);
-  const navigate = useNavigate();  // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetching data from API
         const playersResponse = await axios.get('http://localhost:3001/player');
-        const attendanceResponse = await axios.get('http://localhost:3001/attendance'); 
+        const attendanceResponse = await axios.get('http://localhost:3001/attendance');
         const players = playersResponse.data;
         const attendanceRecords = attendanceResponse.data;
 
@@ -100,7 +100,7 @@ export default function DataGridDemo() {
   };
 
   const handleAddAttendance = () => {
-    navigate('/takeAttendance');  // Navigate to takeAttendance page
+    navigate('/takeAttendance');
   };
 
   return (
@@ -129,7 +129,7 @@ export default function DataGridDemo() {
             className="button button-margin-right"
             variant="outlined"
             startIcon={<ControlPointIcon />}
-            onClick={handleAddAttendance}  // Change onClick handler
+            onClick={handleAddAttendance}
           >
             Add
           </Button>
