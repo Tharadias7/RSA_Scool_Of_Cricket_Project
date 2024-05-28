@@ -1,13 +1,13 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import SideBar from "../../components/SideBar";
+import SideBar from "./SideBar";
 import axios from "axios";
-import logoImage from "../../assets/logo.png";
+import logoImage from "../assets/logo.png";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
 
-function playerRegistration() {
+function PlayerRegistration() {  // Correct function name should start with a capital letter
   const initialValues = {
     name: "",
     date_of_birth: "",
@@ -31,7 +31,7 @@ function playerRegistration() {
       setSubmitting(true);
 
       const response = await axios.post("http://localhost:3001/player", data);
-      console.log("Player created successfully", response?.data ??"Couldn't get response data");
+      console.log("Player created successfully", response.data);
 
       // Show success message using SweetAlert2
       Swal.fire({
@@ -41,7 +41,6 @@ function playerRegistration() {
         confirmButtonColor: '#791414',
         text: "Player registration successful",
       });
-
 
     } catch (error) {
       console.log("Error creating player", error);
@@ -54,12 +53,7 @@ function playerRegistration() {
         text: "Player registration failed",
       });
     } finally {
-      console.log("Finally");
-      console.log("Player ID: ", response.data.playerId);
-      
       setSubmitting(false);
-      
-
     }
   };
 
@@ -132,7 +126,6 @@ function playerRegistration() {
             <Field type="date" id="inputRegisterUser" name="joined_date" />
 
             <div className="button-container">
-            
               <button type="submit" style={{ width: "50%" }}>
                 Register
               </button>
@@ -144,4 +137,4 @@ function playerRegistration() {
   );
 }
 
-export default playerRegistration;
+export default PlayerRegistration;

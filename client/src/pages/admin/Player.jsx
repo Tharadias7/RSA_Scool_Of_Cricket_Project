@@ -8,10 +8,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import "../../App.css";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Player() {
   const [listOfPlayers, setListOfPlayers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("http://localhost:3001/player").then((response) => {
@@ -28,6 +29,10 @@ function Player() {
     { field: "employee_no", headerName: "Assigned Coach", width: 150 },
     { field: "joined_date", headerName: "Joined Date", width: 150 },
   ];
+
+const handleAddStudent = () => {
+  navigate('/playerRegistration');
+};
 
   const handleEditStudent = () => {
     // Handle edit student logic here
@@ -60,15 +65,14 @@ function Player() {
             marginLeft:"500px",
           }}
         >
-          <Link to="/playerRegistration" style={{ textDecoration: "none" }}>
             <Button
               className="button button-margin-right"
               variant="outlined"
               startIcon={<ControlPointIcon />}
+              onClick={handleAddStudent}
             >
               Add
             </Button>
-          </Link>
           <Button
             className="button button-margin-right"
             variant="outlined"

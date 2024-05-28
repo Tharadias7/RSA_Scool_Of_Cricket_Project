@@ -12,15 +12,16 @@ router.get("/", async (req, res) => {
   
 
 // Get a player by ID
-router.get("/:id", async (req, res) => {
-    const playerId = req.params.id;
-    const player = await Player.findByPk(playerId);
-
-    if (player) {
-        res.json(player);
-    } else {
-        res.status(404).json({ message: 'Player not found' });
+router.get('/:id', async (req, res) => {
+  try {
+    const player = await Player.findByPk(req.params.id);
+    if (!player) {
+      return res.status(404).json({ error: 'Player not found' });
     }
+    res.json(player);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // Create a new player

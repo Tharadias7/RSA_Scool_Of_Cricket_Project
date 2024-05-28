@@ -17,8 +17,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import PaidIcon from '@mui/icons-material/Paid';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import SummarizeIcon from '@mui/icons-material/Summarize';
-import SettingsIcon from '@mui/icons-material/Settings';
+import SportsHandballIcon from '@mui/icons-material/SportsHandball';
 import SportsCricketIcon from '@mui/icons-material/SportsCricket';
+import CheckroomIcon from '@mui/icons-material/Checkroom';
 import GroupIcon from '@mui/icons-material/Group';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
@@ -65,7 +66,12 @@ const Drawer = styled(MuiDrawer, {
 export default function SideBar() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [inventoryOpen, setInventoryOpen] = React.useState(false);
   const navigate = useNavigate();
+
+  const handleInventoryClick = () => {
+    setInventoryOpen(!inventoryOpen);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -87,7 +93,6 @@ export default function SideBar() {
             ) : (
               <ChevronLeftIcon />
             )}
-            
           </MenuIcon>
         </Box>
         <Divider />
@@ -168,7 +173,7 @@ export default function SideBar() {
                 }}
                 style={{ color: "#791414" }} 
               >
-                <SportsCricketIcon />
+                <SportsHandballIcon />
               </ListItemIcon>
               <ListItemText primary="Player" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
@@ -233,9 +238,7 @@ export default function SideBar() {
           <ListItem
             disablePadding
             sx={{ display: "block" }}
-            onClick={() => {
-              navigate("/Inventory");
-            }}
+            onClick={handleInventoryClick}
           >
             <ListItemButton
               sx={{
@@ -260,6 +263,63 @@ export default function SideBar() {
               />
             </ListItemButton>
           </ListItem>
+          {inventoryOpen && (
+            <Box sx={{ pl: 4 }}>
+              <ListItem
+                disablePadding
+                sx={{ display: "block" }}
+                onClick={() => {
+                  navigate("/Equipment");
+                }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+                style={{ color: "#791414" }} 
+              >
+                <SportsCricketIcon />
+              </ListItemIcon>
+                  <ListItemText primary="Equipment" sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem
+                disablePadding
+                sx={{ display: "block" }}
+                onClick={() => {
+                  navigate("/Uniform");
+                }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                ><ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+                style={{ color: "#791414" }} 
+              >
+                <CheckroomIcon />
+              </ListItemIcon>
+                  <ListItemText primary="Uniform" sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            </Box>
+          )}
           <ListItem
             disablePadding
             sx={{ display: "block" }}
