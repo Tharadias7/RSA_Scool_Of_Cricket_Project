@@ -26,7 +26,7 @@ body {
   margin-right: 20px;
 }
 
-/* REGISTER USER PAGE CSS */
+/* REGISTER USER, REGISTER PLAYER, ADD EQUIPMENT PAGE CSS */
 
 .logo-container {
   display: flex;
@@ -89,8 +89,8 @@ body {
   justify-content: center;
 }
 
-msg {
-  color: red;
+.msg {
+  color: red !important;
 }
 
 /* QR CODE PAGE CSS */
@@ -184,4 +184,20 @@ msg {
 .dataGridContainer {
   width: 100vw;
   overflow-x: auto;
+}
+
+//EQUIPMENT PAGE CSS
+
+.button.lending-button {
+  background-color: #791414 !important;
+  border-color: #791414 !important;
+  color: white !important;
+}
+
+//ISSUE ITEM POP UP MODEL CSS
+
+.issueConBtn{
+  background-color: #791414 !important;
+  border-color: #791414 !important;
+  color: white !important;
 }

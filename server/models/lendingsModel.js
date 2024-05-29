@@ -16,13 +16,13 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    collectedDate: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
     issuedDate: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    collectedDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   }, {
     timestamps: false,

@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
     },
     availableItems: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   }, {
     timestamps: false,
