@@ -13,7 +13,8 @@ import Payment from "./pages/admin/Payment";
 import CollectPayment from "./components/collectPayment";
 import Equipment from "./pages/admin/Equipment";
 import Uniform from "./pages/admin/Uniform";
-
+import AddEquipment from "./pages/admin/addEquipment";
+import issueItems from "./components/issueItems";
 
 function App() {
   return <div className="App">
@@ -33,6 +34,8 @@ function App() {
         <Route path="/collectPayment" exact Component={CollectPayment}/>
         <Route path="/equipment" exact Component={Equipment}/>
         <Route path="/uniform" exact Component={Uniform}/>
+        <Route path="/addEquipment" exact Component={AddEquipment}/>
+        <Route path="/issueItems" exact Component={issueItems}/>
       </Routes>
     </Router>
   </div>
