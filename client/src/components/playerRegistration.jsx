@@ -7,7 +7,7 @@ import logoImage from "../assets/logo.png";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
 
-function PlayerRegistration() {  // Correct function name should start with a capital letter
+function PlayerRegistration() {  
   const initialValues = {
     name: "",
     date_of_birth: "",
@@ -29,8 +29,8 @@ function PlayerRegistration() {  // Correct function name should start with a ca
   const onSubmit = async (data, { setSubmitting }) => {
     try {
       setSubmitting(true);
-
-      const response = await axios.post("http://localhost:3001/player", data);
+      const playerData = { ...data, active: true };  // Set active to true
+      const response = await axios.post("http://localhost:3001/player", playerData);
       console.log("Player created successfully", response.data);
 
       // Show success message using SweetAlert2
@@ -39,7 +39,7 @@ function PlayerRegistration() {  // Correct function name should start with a ca
         title: "Success",
         iconColor: 'green',
         confirmButtonColor: '#791414',
-        text: "Player registration successful",
+        text: "Player registration successful!",
       });
 
     } catch (error) {

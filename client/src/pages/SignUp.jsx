@@ -58,32 +58,34 @@ function SignUp() {
         contact_no: data.contact_no,
         qualification: data.qualification,
         assigned_team: data.assigned_team,
+        active: true,  // Set active to true
       };
 
-      const response = await axios.post(
-        "http://localhost:3001/staff",
-        staffData
-      );
-      const employeeNo = response.data.employee_no;
+      const response = await axios.post("http://localhost:3001/staff", staffData);
+      console.log("Staff created successfully");
+
+      const employeeNo = response.data.employee_no;  // Get the newly created employee_no
 
       const userData = {
         username: data.username,
         password: data.password,
         role: des,
-        employee_no: data.employeeNo,
+        employee_no: employeeNo,  // Use the newly created employee_no
       };
 
       await axios.post("http://localhost:3001/user", userData);
+      console.log("User created successfully");
 
-      const coachData = {
-        employee_no: employeeNo,
-        qualifications: data.qualification,
-        assigned_team: data.assigned_team,
-      };
+      if (des === "coach") {
+        const coachData = {
+          employee_no: employeeNo,
+          qualifications: data.qualification,
+          assigned_team: data.assigned_team,
+        };
 
-      await axios.post("http://localhost:3001/coach", coachData);
-
-      console.log("User and staff created successfully");
+        await axios.post("http://localhost:3001/coach", coachData);
+        console.log("Coach created successfully");
+      }
 
       // Show success message using SweetAlert2
       Swal.fire({

@@ -25,15 +25,19 @@ fs.readdirSync(__dirname)
     );
   })
   .forEach(file => {
+    console.log(`Loading model file: ${file}`); // Debug log
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
+    console.log(`Associating model: ${modelName}`); // Debug log
     db[modelName].associate(db);
   }
 });
+
+console.log('Models loaded:', Object.keys(db)); // Debug log
 
 // Define associations between models
 db.Equipment.hasMany(db.Lendings, { foreignKey: 'stockId' });

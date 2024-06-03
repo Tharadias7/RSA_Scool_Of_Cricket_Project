@@ -79,17 +79,60 @@ function Equipment() {
         console.error("Error issuing equipment:", error);
       });
   };
-  
+
+  const handleAddEquipment = () => {
+    navigate("/addEquipment");
+  };
+
+  const handleEditEquipment = (equipment) => {
+    navigate("/editEquipment", { state: { equipment } });
+  };
+
+  const handleRemoveEquipment = (stockId) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this record!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: 'green',
+      cancelButtonColor: '#791414',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:3001/equipment/${stockId}`)
+          .then((response) => {
+            if (response.status === 204) {
+              setListOfEquipments(prevList => prevList.filter(equipment => equipment.stockId !== stockId));
+              Swal.fire({
+                title: 'Deleted!',
+                text: 'Record has been deleted.',
+                icon: 'success',
+                confirmButtonColor: '#791414',
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: 'Aw Snap!',
+              text: error.response?.data?.message || 'Something went wrong!',
+              icon: 'error',
+              confirmButtonColor: '#791414',
+            });
+            console.error('Error removing equipment:', error);
+          });
+      }
+    });
+  };
 
   const columns = [
-    { field: "stockId", headerName: "Stock ID", width: 150 },
-    { field: "item", headerName: "Item", width: 150 },
+    { field: "stockId", headerName: "Stock ID", width: 100 },
+    { field: "item", headerName: "Item", width: 125 },
     { field: "brand", headerName: "Brand", width: 150 },
-    { field: "totalItems", headerName: "Total Items", width: 150 },
+    { field: "totalItems", headerName: "Total Items", width: 100 },
     { field: "availableItems", headerName: "Available Items", width: 150 },
     {
-      field: "action",
-      headerName: "Actions",
+      field: "issue",
+      headerName: "Issue",
       width: 150,
       renderCell: (params) => (
         <Button
@@ -100,19 +143,31 @@ function Equipment() {
         </Button>
       ),
     },
+    {
+      field: "action",
+      headerName: "Actions",
+      width: 200,
+      renderCell: (params) => (
+        <>
+          <Button
+            className="button button-margin-right"
+            variant="outlined"
+            startIcon={<EditIcon />}
+            onClick={() => handleEditEquipment(params.row)}
+            style={{ marginRight: "10px" }}
+          >
+          </Button>
+          <Button
+            className="button button-margin-right"
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={() => handleRemoveEquipment(params.row.stockId)}
+          >
+          </Button>
+        </>
+      ),
+    },
   ];
-
-  const handleAddEquipment = () => {
-    navigate("/addEquipment");
-  };
-
-  const handleEditEquipment = () => {
-    // Handle edit equipment logic here
-  };
-
-  const handleRemoveEquipment = () => {
-    // Handle remove equipment logic here
-  };
 
   return (
     <div style={{ width: "100%", display: "flex" }}>
@@ -145,22 +200,6 @@ function Equipment() {
           >
             Add
           </Button>
-          <Button
-            className="button button-margin-right"
-            variant="outlined"
-            startIcon={<EditIcon />}
-            onClick={handleEditEquipment}
-          >
-            Edit
-          </Button>
-          <Button
-            className="button button-margin-right"
-            variant="outlined"
-            startIcon={<DeleteIcon />}
-            onClick={handleRemoveEquipment}
-          >
-            Delete
-          </Button>
         </div>
         <div style={{ height: 400, width: "auto", margin: "20px" }}>
           <DataGrid
@@ -186,45 +225,47 @@ function Equipment() {
             transform: "translate(-50%, -50%)",
             width: 400,
             bgcolor: "background.paper",
+            border: "2px solid #000",
             boxShadow: 24,
             p: 4,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            gap: "20px",
           }}
         >
           <Typography id="issue-uniform-modal-title" variant="h6" component="h2">
-            ISSUE UNIFORM
+            Issue Equipment
           </Typography>
-          <TextField
-            label="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            margin="normal"
-            fullWidth
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="coach-id-label">Coach ID</InputLabel>
+          <FormControl fullWidth>
+            <InputLabel id="coach-select-label">Select Coach</InputLabel>
             <Select
-              labelId="coach-id-label"
+              labelId="coach-select-label"
+              id="coach-select"
               value={coachId}
+              label="Select Coach"
               onChange={(e) => setCoachId(e.target.value)}
-              label="Coach ID"
             >
               {listOfCoaches.map((coach) => (
                 <MenuItem key={coach.employee_no} value={coach.employee_no}>
-                  {coach.employee_no}
+                  {coach.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+          <TextField
+            id="quantity-input"
+            label="Quantity"
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            fullWidth
+          />
           <Button
-            className="issueConBtn"
             variant="contained"
             onClick={handleIssueConfirm}
-            sx={{ mt: 2 }}
+            style={{ backgroundColor: "#791414", color: "white" }}
           >
-            CONFIRM
+            Confirm
           </Button>
         </Box>
       </Modal>

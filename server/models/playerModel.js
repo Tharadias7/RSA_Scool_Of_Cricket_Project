@@ -24,12 +24,17 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     employee_no: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     joined_date: {
       type: DataTypes.DATEONLY,
       allowNull: false,
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,  // Set default value to true
     },
   }, {
     timestamps: false,

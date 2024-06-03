@@ -15,12 +15,14 @@ async function syncDatabase() {
 
     // Sync models in order
     await db.Staff.sync();
+    await db.User.sync();
     await db.Equipment.sync();
     await db.Coach.sync();
     await db.Player.sync();
     await db.Attendance.sync();
     await db.Payment.sync();
     await db.Lendings.sync();
+    await db.Uniform.sync();
 
     console.log('All models were synchronized successfully.');
   } catch (error) {
@@ -61,6 +63,10 @@ app.use("/equipment", equipmentRouter);
 // lendings router
 const lendingsRouter = require("./routes/lendingRoute");
 app.use("/lending", lendingsRouter);
+
+//uniform router
+const uniformRouter = require("./routes/uniformRoute");
+app.use("/uniform", uniformRouter); 
 
 // Sync the database before starting the server
 syncDatabase().then(() => {
