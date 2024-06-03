@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Lendings = sequelize.define('Lendings', {
     stockId: {
-      type: DataTypes.INTEGER,  // Should match the type of stockId in Equipment
+      type: DataTypes.INTEGER,  
       allowNull: false,
       primaryKey: true,
     },

@@ -10,19 +10,23 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import "../../App.css";
 
-function AddEquipment() {
+function AddUniform() {
   const initialValues = {
     item: "",
-    brand: "",
-    totalItems: "",
+    size: "",
+    unitPrice: "",
+    amount: "",
   };
 
   const validationSchema = Yup.object().shape({
     item: Yup.string().required("Item is required"),
-    brand: Yup.string().required("Brand is required"),
-    totalItems: Yup.number()
-      .required("Total items is required")
-      .min(1, "Total items must be at least 1"),
+    size: Yup.string().required("Size is required"),
+    unitPrice: Yup.number()
+      .required("Unit price is required")
+      .min(1, "Unit price must be greater than 0"),
+    amount: Yup.number()
+      .required("Amount is required")
+      .min(1, "Amount must be greater than 0"),
   });
 
   const onSubmit = async (data, { setSubmitting, resetForm }) => {
@@ -30,27 +34,27 @@ function AddEquipment() {
       setSubmitting(true);
 
       const response = await axios.post(
-        "http://localhost:3001/equipment",
+        "http://localhost:3001/uniform",
         data
       );
-      console.log("Equipment added successfully", response.data);
+      console.log("Uniform added successfully", response.data);
 
       Swal.fire({
         icon: "success",
         title: "Success",
         confirmButtonColor: "#791414",
-        text: "Equipment added successfully",
+        text: "Items added to the stock successfully",
       });
 
       resetForm();
     } catch (error) {
-      console.log("Error adding equipment", error);
+      console.log("Error adding uniform", error);
 
       Swal.fire({
         icon: "error",
         title: "Error",
         confirmButtonColor: "#791414",
-        text: "Failed to add equipment",
+        text: "Failed to add items to the stock",
       });
     } finally {
       setSubmitting(false);
@@ -68,7 +72,7 @@ function AddEquipment() {
             style={{ width: "100px", height: "100px" }}
           />
           <Typography component="h1" variant="h5">
-            Add Equipment to Stock
+            Add Uniform to Stock
           </Typography>
         </div>
         <Formik
@@ -83,19 +87,11 @@ function AddEquipment() {
               <Autocomplete
                 freeSolo
                 options={[
-                  "Bat",
-                  "Ball",
-                  "Gloves",
-                  "Helmet",
-                  "Wicket stumps",
-                  "Bails",
-                  "Cricket nets",
-                  "Mobile Cages",
-                  "Cricket Bag",
-                  "Grip Tape",
-                  "Abdo Guard",
-                  "Cricket Pads",
-                  "Cricket Boots",
+                  "Jersey",
+                  "Pants",
+                  "Cap",
+                  "Socks",
+                  "Shoes",
                 ]}
                 onChange={(event, value) => setFieldValue("item", value)}
                 renderInput={(params) => (
@@ -107,39 +103,32 @@ function AddEquipment() {
                 )}
               />
 
-              <label>Brand</label>
-              <ErrorMessage name="brand" component="span" className="msg" />
+              <label>Size</label>
+              <ErrorMessage name="size" component="span" className="msg" />
               <Autocomplete
                 freeSolo
-                options={[
-                  "Adidas",
-                  "Nike",
-                  "Puma",
-                  "Reebok",
-                  "GM",
-                  "SS",
-                  "SG",
-                  "Gray-Nicolls",
-                  "Kookaburra",
-                  "New Balance",
-                ]}
-                onChange={(event, value) => setFieldValue("brand", value)}
+                options={["XS","S", "M", "L", "XL"]}
+                onChange={(event, value) => setFieldValue("size", value)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    name="brand"
-                    onChange={(e) => setFieldValue("brand", e.target.value)}
+                    name="size"
+                    onChange={(e) => setFieldValue("size", e.target.value)}
                   />
                 )}
               />
 
-              <label>Total Items</label>
-              <ErrorMessage name="totalItems" component="span" className="msg" />
-              <Field type="number" id="inputRegisterUser" name="totalItems" />
+              <label>Unit Price</label>
+              <ErrorMessage name="unitPrice" component="span" className="msg" />
+              <Field type="number" id="inputRegisterUser" name="unitPrice" />
+
+              <label>Amount</label>
+              <ErrorMessage name="amount" component="span" className="msg" />
+              <Field type="number" id="inputRegisterUser" name="amount" />
 
               <div className="button-container">
                 <button type="submit" style={{ width: "50%" }}>
-                  Add Equipment
+                  Add Uniform
                 </button>
               </div>
             </Form>
@@ -150,4 +139,4 @@ function AddEquipment() {
   );
 }
 
-export default AddEquipment;
+export default AddUniform;

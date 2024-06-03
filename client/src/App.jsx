@@ -15,6 +15,11 @@ import Equipment from "./pages/admin/Equipment";
 import Uniform from "./pages/admin/Uniform";
 import AddEquipment from "./pages/admin/addEquipment";
 import issueItems from "./components/issueItems";
+import editStaff from "./pages/admin/editStaff";
+import editPlayer from "./components/editPlayer";
+import AddUniform from "./pages/admin/addUniform";
+import EditUniform from "./pages/admin/editUniform";
+import editEquipment from "./pages/admin/editEquipment";
 
 function App() {
   return <div className="App">
@@ -36,6 +41,11 @@ function App() {
         <Route path="/uniform" exact Component={Uniform}/>
         <Route path="/addEquipment" exact Component={AddEquipment}/>
         <Route path="/issueItems" exact Component={issueItems}/>
+        <Route path="/editStaff" exact Component={editStaff} />
+        <Route path="/editPlayer" exact Component={editPlayer} />
+        <Route path="/addUniform" exact Component={AddUniform} />
+        <Route path="/editUniform" exact Component={EditUniform} />
+        <Route path="/editEquipment" exact Component={editEquipment} />
       </Routes>
     </Router>
   </div>
