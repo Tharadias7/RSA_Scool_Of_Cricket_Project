@@ -20,6 +20,9 @@ import editPlayer from "./components/editPlayer";
 import AddUniform from "./pages/admin/addUniform";
 import EditUniform from "./pages/admin/editUniform";
 import editEquipment from "./pages/admin/editEquipment";
+import Lendings from "./pages/admin/Lendings";
+import Purchases from "./pages/admin/purchases";
+import EditPurchases from "./pages/admin/editPurchases";
 
 function App() {
   return <div className="App">
@@ -46,6 +49,9 @@ function App() {
         <Route path="/addUniform" exact Component={AddUniform} />
         <Route path="/editUniform" exact Component={EditUniform} />
         <Route path="/editEquipment" exact Component={editEquipment} />
+        <Route path="/lendings" exact Component={Lendings} />
+        <Route path="/purchases" exact Component={Purchases} />
+        <Route path="/editPurchases" exact Component={EditPurchases} />
       </Routes>
     </Router>
   </div>

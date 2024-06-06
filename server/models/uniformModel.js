@@ -23,9 +23,7 @@ module.exports = (sequelize) => {
     currentStock: {
       type: DataTypes.INTEGER,
     },
-  }, {
-    timestamps: false,
-  });
+  },);
 
   return Uniform;
 };

@@ -2,59 +2,93 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "../../components/SideBar";
 import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
+import { Button } from "@mui/material";
+import Swal from "sweetalert2";
 import "../../App.css";
 
 function Lendings() {
   const [listOfLendings, setListOfLendings] = useState([]);
 
   useEffect(() => {
-    fetchLendings();
+    axios.get("http://localhost:3001/lending")
+      .then((response) => {
+        const updatedLendings = response.data.map((lending, index) => ({
+          ...lending,
+          id: lending.issueId, // Ensure correct ID mapping
+          item: lending.Equipment.item,
+          brand: lending.Equipment.brand,
+        }));
+        setListOfLendings(updatedLendings);
+      })
+      .catch(error => {
+        console.error("Error fetching lendings:", error);
+      });
   }, []);
 
-  const fetchLendings = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/lendings");
-      setListOfLendings(response.data);
-    } catch (error) {
-      console.error("Error fetching lendings", error);
-    }
-  };
-
-  const handleStatusChange = async (params) => {
-    const updatedLending = {
-      ...params.row,
-      collectedDate: new Date().toISOString().split("T")[0],
-    };
-
-    try {
-      await axios.put(`http://localhost:3001/lendings/${params.row.stockId}/${params.row.employee_no}`, updatedLending);
-      fetchLendings();  // Refresh the data
-    } catch (error) {
-      console.error("Error updating lending", error);
-    }
+  const handleCollect = (lending) => {
+    axios.put(`http://localhost:3001/lending/${lending.issueId}/collect`)
+      .then(() => {
+        setListOfLendings((prevList) =>
+          prevList.map((item) =>
+            item.issueId === lending.issueId ? { ...item, collectedDate: new Date().toISOString() } : item
+          )
+        );
+        Swal.fire({
+          title: 'Success!',
+          text: 'Collection recorded successfully',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      })
+      .catch(error => {
+        Swal.fire({
+          title: 'Oh Snap!',
+          text: error.response?.data?.message || 'Something went wrong!',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+        console.error("Error recording collection:", error);
+      });
   };
 
   const columns = [
-    { field: "stockId", headerName: "Stock ID", width: 150 },
+    { field: "item", headerName: "Item", width: 125 },
+    { field: "brand", headerName: "Brand", width: 150 },
     { field: "employee_no", headerName: "Employee No", width: 150 },
     { field: "issuedAmount", headerName: "Issued Amount", width: 150 },
-    { field: "issuedDate", headerName: "Issued Date", width: 150 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 150,
+      field: "issuedDate",
+      headerName: "Issued Date",
+      width: 200,
       renderCell: (params) => (
-        <Button
-          variant="outlined"
-          onClick={() => handleStatusChange(params)}
-          disabled={!!params.row.collectedDate}
-        >
-          {params.row.collectedDate ? "Collected" : "Issued"}
-        </Button>
+        <span>{new Date(params.value).toLocaleDateString()}</span>
       ),
     },
-    { field: "collectedDate", headerName: "Collected Date", width: 150 },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => (
+        params.row.collectedDate ? (
+          <span>Collected</span>
+        ) : (
+          <Button
+            variant="outlined"
+            onClick={() => handleCollect(params.row)}
+          >
+            Collect
+          </Button>
+        )
+      ),
+    },
+    {
+      field: "collectedDate",
+      headerName: "Collected Date",
+      width: 200,
+      renderCell: (params) => (
+        params.value ? new Date(params.value).toLocaleDateString() : ""
+      ),
+    },
   ];
 
   return (
@@ -77,7 +111,7 @@ function Lendings() {
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
-            getRowId={(row) => row.stockId + '-' + row.employee_no}
+            getRowId={(row) => row.id}
           />
         </div>
       </div>

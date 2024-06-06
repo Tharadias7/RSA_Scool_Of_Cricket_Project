@@ -94,6 +94,37 @@ router.put('/:stockId', async (req, res) => {
 });
 
 
+// Get the earliest stock record based on item and size
+router.get('/earliest', async (req, res) => {
+  const { item, size } = req.query;
+  try {
+    const earliestStock = await Uniform.findOne({
+      where: { item, size },
+      order: [['createdAt', 'ASC']],
+    });
+    if (earliestStock) {
+      res.json(earliestStock);
+    } else {
+      res.status(404).json({ message: 'No stock found for the given item and size' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching stock data', error });
+  }
+});
+
+// Get distinct items from the uniform table
+router.get('/items', async (req, res) => {
+  try {
+    const items = await Uniform.findAll({
+      attributes: ['item'],
+      group: ['item']
+    });
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching items', error });
+  }
+});
+
 // Delete a uniform record
 router.delete('/:stockId', async (req, res) => {
   const { stockId } = req.params;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SideBar from "../../components/SideBar";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Modal, Box, TextField, Typography, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import { Button, Modal, Box, Typography, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
@@ -14,9 +14,12 @@ function Equipment() {
   const [listOfEquipments, setListOfEquipments] = useState([]);
   const [listOfCoaches, setListOfCoaches] = useState([]);
   const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [quantity, setQuantity] = useState("");
   const [coachId, setCoachId] = useState("");
+  const [currentStockId, setCurrentStockId] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +38,7 @@ function Equipment() {
       .catch(error => {
         console.error("Error fetching coaches:", error);
       });
-  }, []); // Empty dependency array to ensure this runs only once
+  }, []);
 
   const handleOpen = (equipment) => {
     setSelectedEquipment(equipment);
@@ -49,35 +52,51 @@ function Equipment() {
   };
 
   const handleIssueConfirm = () => {
-    const payload = {
-      stockId: selectedEquipment.stockId,
-      employee_no: coachId,
-      issuedAmount: parseInt(quantity, 10), // Ensure quantity is an integer
-      issuedDate: new Date().toISOString(), // Ensure the date is in a valid format
-      collectedDate: null,
-    };
-    console.log("Payload:", payload);
-  
-    axios.post("http://localhost:3001/lending", payload)
-      .then(() => {
-        handleClose();
-        Swal.fire({
-          title: 'Success!',
-          text: 'Issue successful',
-          icon: 'success',
-          confirmButtonText: 'OK',
+    if (selectedEquipment.availableItems >= quantity) {
+      const payload = {
+        stockId: selectedEquipment.stockId,
+        employee_no: coachId,
+        issuedAmount: parseInt(quantity, 10),
+        issuedDate: new Date().toISOString(),
+        collectedDate: null,
+      };
+
+      axios.post("http://localhost:3001/lending", payload)
+        .then(() => {
+          axios.get("http://localhost:3001/equipment")
+            .then((response) => {
+              setListOfEquipments(response.data);
+              handleClose();
+              Swal.fire({
+                title: 'Success!',
+                text: 'Issue successful',
+                icon: 'success',
+                confirmButtonText: 'OK',
+              });
+            })
+            .catch(error => {
+              console.error("Error fetching equipment:", error);
+            });
+        })
+        .catch(error => {
+          handleClose();
+          Swal.fire({
+            title: 'Oops.',
+            text: 'Something went wrong',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+          console.error("Error issuing equipment:", error);
         });
-      })
-      .catch(error => {
-        handleClose();
-        Swal.fire({
-          title: 'Oh Snap!',
-          text: error.response?.data?.message || 'Something went wrong!',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
-        console.error("Error issuing equipment:", error);
+    } else {
+      handleClose();
+      Swal.fire({
+        title: 'Oh Snap!',
+        text: 'Not enough items available',
+        icon: 'error',
+        confirmButtonText: 'OK',
       });
+    }
   };
 
   const handleAddEquipment = () => {
@@ -88,40 +107,20 @@ function Equipment() {
     navigate("/editEquipment", { state: { equipment } });
   };
 
-  const handleRemoveEquipment = (stockId) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this record!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: 'green',
-      cancelButtonColor: '#791414',
-      confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`http://localhost:3001/equipment/${stockId}`)
-          .then((response) => {
-            if (response.status === 204) {
-              setListOfEquipments(prevList => prevList.filter(equipment => equipment.stockId !== stockId));
-              Swal.fire({
-                title: 'Deleted!',
-                text: 'Record has been deleted.',
-                icon: 'success',
-                confirmButtonColor: '#791414',
-              });
-            }
-          })
-          .catch((error) => {
-            Swal.fire({
-              title: 'Aw Snap!',
-              text: error.response?.data?.message || 'Something went wrong!',
-              icon: 'error',
-              confirmButtonColor: '#791414',
-            });
-            console.error('Error removing equipment:', error);
-          });
-      }
-    });
+  const handleRemoveEquipment = (stockId, totalItems) => {
+    setCurrentStockId(stockId);
+    setTotalItems(totalItems);
+    setDeleteOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteOpen(false);
+    setCurrentStockId(null);
+    setTotalItems(0);
+  };
+
+  const handleLendingRecords = () => {
+    navigate("/lendings");
   };
 
   const columns = [
@@ -161,7 +160,7 @@ function Equipment() {
             className="button button-margin-right"
             variant="outlined"
             startIcon={<DeleteIcon />}
-            onClick={() => handleRemoveEquipment(params.row.stockId)}
+            onClick={() => handleRemoveEquipment(params.row.stockId, params.row.totalItems)}
           >
           </Button>
         </>
@@ -195,6 +194,13 @@ function Equipment() {
           <Button
             className="button button-margin-right"
             variant="outlined"
+            onClick={handleLendingRecords}
+          >
+            Lending Records
+          </Button>
+          <Button
+            className="button button-margin-right"
+            variant="outlined"
             startIcon={<ControlPointIcon />}
             onClick={handleAddEquipment}
           >
@@ -214,8 +220,8 @@ function Equipment() {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="issue-uniform-modal-title"
-        aria-describedby="issue-uniform-modal-description"
+        aria-labelledby="issue-equipment-modal-title"
+        aria-describedby="issue-equipment-modal-description"
       >
         <Box
           sx={{
@@ -233,7 +239,7 @@ function Equipment() {
             gap: "20px",
           }}
         >
-          <Typography id="issue-uniform-modal-title" variant="h6" component="h2">
+          <Typography id="issue-equipment-modal-title" variant="h6" component="h2">
             Issue Equipment
           </Typography>
           <FormControl fullWidth>
@@ -247,7 +253,7 @@ function Equipment() {
             >
               {listOfCoaches.map((coach) => (
                 <MenuItem key={coach.employee_no} value={coach.employee_no}>
-                  {coach.name}
+                  {coach.employee_no}
                 </MenuItem>
               ))}
             </Select>
@@ -269,7 +275,139 @@ function Equipment() {
           </Button>
         </Box>
       </Modal>
+      <DeleteModal
+        open={deleteOpen}
+        handleClose={handleCloseDeleteModal}
+        stockId={currentStockId}
+        totalItems={totalItems}
+        fetchEquipments={() => {
+          axios.get("http://localhost:3001/equipment")
+            .then((response) => {
+              setListOfEquipments(response.data);
+            })
+            .catch(error => {
+              console.error("Error fetching equipment:", error);
+            });
+        }}
+      />
     </div>
+  );
+}
+
+function DeleteModal({ open, handleClose, stockId, totalItems, fetchEquipments }) {
+  const [deleteOption, setDeleteOption] = useState("all");
+  const [deleteAmount, setDeleteAmount] = useState("");
+
+  const handleConfirm = () => {
+    if (deleteOption === "all") {
+      axios.delete(`http://localhost:3001/equipment/${stockId}`)
+        .then(() => {
+          fetchEquipments();
+          handleClose();
+          Swal.fire({
+            title: 'Success!',
+            text: 'Equipment deleted successfully',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        })
+        .catch((error) => {
+          console.error("Error deleting equipment:", error);
+          Swal.fire({
+            title: 'Oops!',
+            text: 'Something went wrong',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        });
+    } else {
+      const amount = parseInt(deleteAmount, 10);
+      if (amount <= totalItems) {
+        axios.put(`http://localhost:3001/equipment/reduce/${stockId}`, { amount })
+          .then(() => {
+            fetchEquipments();
+            handleClose();
+            Swal.fire({
+              title: 'Success!',
+              text: 'Amount reduced successfully',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            });
+          })
+          .catch((error) => {
+            console.error("Error reducing equipment amount:", error);
+            Swal.fire({
+              title: 'Oops!',
+              text: 'Something went wrong',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+          });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Entered amount is greater than total items',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    }
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="delete-modal-title"
+      aria-describedby="delete-modal-description"
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 400,
+          bgcolor: "background.paper",
+          border: "2px solid #000",
+          boxShadow: 24,
+          p: 4,
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+        }}
+      >
+        <Typography id="delete-modal-title" variant="h6" component="h2">
+          Deleting Amount
+        </Typography>
+        <RadioGroup
+          aria-label="delete-option"
+          name="delete-option"
+          value={deleteOption}
+          onChange={(e) => setDeleteOption(e.target.value)}
+        >
+          <FormControlLabel value="all" control={<Radio />} label="All" />
+          <FormControlLabel value="amount" control={<Radio />} label="Other amount" />
+        </RadioGroup>
+        {deleteOption === "amount" && (
+          <TextField
+            id="delete-amount-input"
+            label="Enter amount"
+            type="number"
+            value={deleteAmount}
+            onChange={(e) => setDeleteAmount(e.target.value)}
+            fullWidth
+          />
+        )}
+        <Button
+          variant="contained"
+          onClick={handleConfirm}
+          style={{ backgroundColor: "#791414", color: "white" }}
+        >
+          Confirm
+        </Button>
+      </Box>
+    </Modal>
   );
 }
 

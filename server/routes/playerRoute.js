@@ -3,12 +3,16 @@ const router = express.Router();
 const { Player } = require('../models');
 const { generatePlayerId } = require('../utils/playerUtil');
 
-// Get all the active players
-router.get("/", async (req, res) => {
+// Get all active players
+router.get('/', async (req, res) => {
+  try {
     const listOfPlayers = await Player.findAll({
-        where: { active: true }  // Fetch only active players
+      where: { active: true }  // Fetch only active players
     });
     res.json(listOfPlayers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching active players', error });
+  }
 });
 
 // Get a player by ID

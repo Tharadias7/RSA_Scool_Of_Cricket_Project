@@ -2,15 +2,19 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Lendings = sequelize.define('Lendings', {
+    issueId: {
+      type: DataTypes.INTEGER,  
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     stockId: {
       type: DataTypes.INTEGER,  
       allowNull: false,
-      primaryKey: true,
     },
     employee_no: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
     },
     issuedAmount: {
       type: DataTypes.INTEGER,

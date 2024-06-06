@@ -23,6 +23,7 @@ async function syncDatabase() {
     await db.Payment.sync();
     await db.Lendings.sync();
     await db.Uniform.sync();
+    await db.Purchases.sync();
 
     console.log('All models were synchronized successfully.');
   } catch (error) {
@@ -66,7 +67,11 @@ app.use("/lending", lendingsRouter);
 
 //uniform router
 const uniformRouter = require("./routes/uniformRoute");
-app.use("/uniform", uniformRouter); 
+app.use("/uniform", uniformRouter);
+
+//purchase router
+const purchaseRouter = require("./routes/purchasesRoute");
+app.use("/purchase", purchaseRouter);
 
 // Sync the database before starting the server
 syncDatabase().then(() => {

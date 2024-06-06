@@ -40,6 +40,13 @@ Object.keys(db).forEach(modelName => {
 console.log('Models loaded:', Object.keys(db)); // Debug log
 
 // Define associations between models
+
+db.Player.belongsToMany(db.Uniform, { through: db.Purchases, foreignKey: 'playerId', otherKey: 'stockId' });
+db.Uniform.belongsToMany(db.Player, { through: db.Purchases, foreignKey: 'stockId', otherKey: 'playerId' });
+
+db.Uniform.belongsToMany(db.Purchases, { through: 'UniformPurchases', as: "purchases", foreignKey: 'stockId' });
+db.Purchases.belongsToMany(db.Uniform, { through: 'UniformPurchases', as: "uniforms", foreignKey: 'transactionId' });
+
 db.Equipment.hasMany(db.Lendings, { foreignKey: 'stockId' });
 db.Lendings.belongsTo(db.Equipment, { foreignKey: 'stockId' });
 
@@ -63,5 +70,5 @@ db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no' });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
 module.exports = db;
+
