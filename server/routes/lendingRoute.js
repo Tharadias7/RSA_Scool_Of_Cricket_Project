@@ -1,135 +1,92 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { Lending } = require("../models");
+const { Lendings, Equipment } = require('../models');
 
-// Get all the records
+// Get all the lending records with associated equipment data
 router.get("/", async (req, res) => {
   try {
-    const lendings = await Lending.findAll();
+    const lendings = await Lendings.findAll({
+      include: [
+        {
+          model: Equipment,
+          attributes: ['item', 'brand'],
+        },
+      ],
+    });
     res.json(lendings);
   } catch (err) {
+    console.error('Error fetching lending records:', err);
     res.status(500).json({ message: err.message });
   }
 });
 
 // Create a new lending record
-router.post("/", async (req, res) => {
-  const { stockId, employee_no, issuedAmount, collectedDate, issuedDate } = req.body;
-  console.log("Received lending data:", req.body); // Log the request body
-  
-  // Validation Check
-  if (!stockId || !employee_no || !issuedAmount || !issuedDate) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
+router.post('/', async (req, res) => {
+  const { stockId, employee_no, issuedAmount, issuedDate } = req.body;
 
   try {
-    const newLending = await Lending.create({ stockId, employee_no, issuedAmount, collectedDate, issuedDate });
-    res.status(201).json(newLending);
-  } catch (err) {
-    console.error("Error creating lending record:", err); // Log the error
-    res.status(400).json({ message: err.message });
+    const equipment = await Equipment.findOne({ where: { stockId } });
+    if (!equipment) {
+      return res.status(404).json({ message: 'Equipment not found' });
+    }
+
+    if (equipment.availableItems < issuedAmount) {
+      return res.status(400).json({ message: 'Not enough items available' });
+    }
+
+    await Lendings.create({
+      stockId,
+      employee_no,
+      issuedAmount,
+      issuedDate,
+      collectedDate: null,
+    });
+
+    equipment.availableItems -= issuedAmount;
+    await equipment.save();
+
+    res.status(201).json({ message: 'Lending record created successfully' });
+  } catch (error) {
+    console.error('Error creating lending record:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
-
-
-
-// Update a lending record
-router.put("/:stockId/:employee_no", async (req, res) => {
-  const { stockId, employee_no } = req.params;
-  const { collectedDate } = req.body;
+// Update lending record and increase available items when collected
+router.put("/:id/collect", async (req, res) => {
+  const { id } = req.params;
+  const collectedDate = new Date().toISOString();
 
   try {
-    const lending = await Lending.findOne({ where: { stockId, employee_no } });
-    if (lending) {
-      lending.collectedDate = collectedDate;
-      await lending.save();
-      res.status(200).json(lending);
-    } else {
-      res.status(404).json({ error: "Lending not found" });
+    const lending = await Lendings.findOne({ where: { issueId: id } });
+
+    if (!lending) {
+      return res.status(404).json({ message: "Lending record not found" });
     }
+
+    if (lending.collectedDate) {
+      return res.status(400).json({ message: "Item already collected" });
+    }
+
+    const equipment = await Equipment.findOne({ where: { stockId: lending.stockId } });
+
+    if (!equipment) {
+      return res.status(404).json({ message: "Equipment not found" });
+    }
+
+    // Update the lending record with collectedDate
+    lending.collectedDate = collectedDate;
+    await lending.save();
+
+    // Update the available items in the equipment record
+    equipment.availableItems += lending.issuedAmount;
+    await equipment.save();
+
+    res.status(200).json({ message: "Collection recorded successfully" });
   } catch (error) {
-    res.status(500).json({ error: "Error updating lending" });
+    console.error("Error updating collection:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
 module.exports = router;
-
-// const express = require("express");
-// const router = express.Router();
-// const { Lending, Equipment } = require("../models");
-
-// // Get all the records
-// router.get("/", async (req, res) => {
-//   try {
-//     const lendings = await Lending.findAll();
-//     res.json(lendings);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
-// // Create a new lending record
-// router.post("/", async (req, res) => {
-//   const { stockId, employee_no, issuedAmount, collectedDate, issuedDate } = req.body;
-//   console.log("Received lending data:", req.body); // Log the request body
-
-//   // Validation Check
-//   if (!stockId || !employee_no || !issuedAmount || !issuedDate) {
-//     return res.status(400).json({ message: "Missing required fields" });
-//   }
-
-//   try {
-//     // Start a transaction
-//     const result = await sequelize.transaction(async (t) => {
-//       // Create the lending record
-//       const newLending = await Lending.create(
-//         { stockId, employee_no, issuedAmount, collectedDate, issuedDate },
-//         { transaction: t }
-//       );
-
-//       // Find the equipment and update the available items
-//       const equipment = await Equipment.findByPk(stockId, { transaction: t });
-//       if (!equipment) {
-//         throw new Error("Equipment not found");
-//       }
-
-//       // Ensure there are enough items available to issue
-//       if (equipment.availableItems < issuedAmount) {
-//         throw new Error("Not enough available items to issue");
-//       }
-
-//       equipment.availableItems -= issuedAmount;
-//       await equipment.save({ transaction: t });
-
-//       return newLending;
-//     });
-
-//     res.status(201).json(result);
-//   } catch (err) {
-//     console.error("Error creating lending record:", err); // Log the error
-//     res.status(400).json({ message: err.message });
-//   }
-// });
-
-// // Update a lending record
-// router.put("/:stockId/:employee_no", async (req, res) => {
-//   const { stockId, employee_no } = req.params;
-//   const { collectedDate } = req.body;
-
-//   try {
-//     const lending = await Lending.findOne({ where: { stockId, employee_no } });
-//     if (lending) {
-//       lending.collectedDate = collectedDate;
-//       await lending.save();
-//       res.status(200).json(lending);
-//     } else {
-//       res.status(404).json({ error: "Lending not found" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: "Error updating lending" });
-//   }
-// });
-
-// module.exports = router;
-
