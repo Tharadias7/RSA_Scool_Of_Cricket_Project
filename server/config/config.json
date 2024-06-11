@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": null,
+    "password": "new_password",
     "database": "rsa_project_db",
     "host": "localhost",
     "dialect": "mysql"

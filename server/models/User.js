@@ -1,6 +1,7 @@
-const { Sequelize } = require("sequelize");
-module.exports = (Sequelize, DataTypes) => {
-  const User = Sequelize.define("User",{
+const { DataTypes } = require("sequelize");
+
+module.exports = (sequelize) => {
+  const User = sequelize.define("User",{
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -17,7 +18,6 @@ module.exports = (Sequelize, DataTypes) => {
       },
       role: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       employee_no: {
         type: DataTypes.STRING,

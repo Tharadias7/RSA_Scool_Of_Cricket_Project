@@ -1,15 +1,45 @@
 const express = require("express");
 const router = express.Router();
-const { Op } = require("sequelize"); 
+const { Op } = require("sequelize");
 const { Payment } = require("../models");
 
-// Get all the records
+//Get all the records
 router.get("/", async (req, res) => {
   try {
     const payments = await Payment.findAll();
     res.json(payments);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+// Check if a payment exists for a player in a specific month and year
+router.get("/:playerId/:month/:year", async (req, res) => {
+  const { playerId, month, year } = req.params;
+
+  console.log(`Received params - playerId: ${playerId}, month: ${month}, year: ${year}`); // Log received params
+
+  try {
+    const payment = await Payment.findOne({
+      where: {
+        playerId,
+        month,
+        date: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
+      },
+    });
+
+    if (payment) {
+      console.log(`Payment found: ${payment}`); // Log found payment
+      res.status(200).json(payment);
+    } else {
+      console.log("No payment found"); // Log no payment found
+      res.status(404).json({ message: "No payment found" });
+    }
+  } catch (error) {
+    console.error("Error checking payment:", error); // Log error
+    res.status(500).json({ message: "Error checking payment", error });
   }
 });
 
@@ -20,6 +50,22 @@ router.post("/", async (req, res) => {
   console.log("Received payment data:", req.body); // Log the request body
 
   try {
+    // Check if the payment already exists
+    const currentYear = new Date(date).getFullYear();
+    const existingPayment = await Payment.findOne({
+      where: {
+        playerId,
+        month,
+        date: {
+          [Op.between]: [`${currentYear}-01-01`, `${currentYear}-12-31`],
+        },
+      },
+    });
+
+    if (existingPayment) {
+      return res.status(400).json({ message: "Payment already exists for this month and year." });
+    }
+
     const newPayment = await Payment.create({ date, amount, month, playerId });
     res.status(201).json(newPayment);
   } catch (err) {
@@ -54,30 +100,5 @@ router.put("/:playerId", async (req, res) => {
   }
 });
 
-// Check if a payment exists for a player in a specific month and year
-router.get("/:playerId/:month/:year", async (req, res) => {
-  const { playerId, month, year } = req.params;
-
-  try {
-    const payment = await Payment.findOne({
-      where: {
-        playerId,
-        month,
-        date: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
-        },
-      },
-    });
-
-    if (payment) {
-      res.status(200).json(payment);
-    } else {
-      res.status(404).json({ message: "No payment found" });
-    }
-  } catch (error) {
-    console.error("Error checking payment:", error);
-    res.status(500).json({ message: "Error checking payment", error });
-  }
-});
-
 module.exports = router;
+

@@ -123,8 +123,8 @@ function Uniform() {
           })
           .catch(error => {
             Swal.fire({
-              title: 'Aw Snap!',
-              text: error.response?.data?.message || 'Something went wrong!',
+              title: 'Failed!',
+              text: error.response?.data?.message || 'Something went wrong',
               icon: 'error',
               confirmButtonColor: '#791414',
             });

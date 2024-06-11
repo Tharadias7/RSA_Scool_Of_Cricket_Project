@@ -62,11 +62,14 @@ db.Attendance.belongsTo(db.Player, { foreignKey: 'playerId' });
 db.Player.hasMany(db.Payment, { foreignKey: 'playerId' });
 db.Payment.belongsTo(db.Player, { foreignKey: 'playerId' });
 
-db.Staff.hasOne(db.User, { foreignKey: 'employee_no' });
-db.User.belongsTo(db.Staff, { foreignKey: 'employee_no' });
+db.Staff.hasOne(db.User, { foreignKey: 'employee_no', as: 'user' });
+db.User.belongsTo(db.Staff, { foreignKey: 'employee_no', as: 'staff' });
 
-db.Staff.hasOne(db.Coach, { foreignKey: 'employee_no' });
-db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no' });
+db.Staff.hasOne(db.Coach, { foreignKey: 'employee_no'});
+db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no'});
+
+db.DeletedItem.belongsTo(db.Equipment, { foreignKey: 'stockId' });
+db.Equipment.hasMany(db.DeletedItem, { foreignKey: 'stockId' });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
