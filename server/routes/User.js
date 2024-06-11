@@ -1,70 +1,120 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { User, Staff } = require("../models"); // Import the User and Staff models
+const { User } = require('../models');
+const bcrypt = require('bcrypt');
+const { sign } = require('jsonwebtoken');
 
-// Get all users
-router.get("/", async (req, res) => {
+// Get all user data
+router.get('/', async (req, res) => {
   try {
-    const users = await User.findAll({
-      include: [{ model: Staff, as: "staff" }],
+    const listOfUsers = await User.findAll({
+      where: { active: true }, // Fetch only active users
     });
-    res.json(users);
+    res.json(listOfUsers);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Create a new user
-router.post("/", async (req, res) => {
-  const { username, password, role, employee_no } = req.body; // Ensure employee_no is included
-
-  // Mapping roles to specific values
-  let userRole; // Initialize a variable to store the user's role
-
-  switch (role) {
-    case "Manager":
-      userRole = "admin";
-      break;
-    case "Receptionist":
-      userRole = "receptionist";
-      break;
-    case "InventoryManager":
-      userRole = "inventory_manager";
-      break;
-    case "Coach":
-      userRole = "coach";
-      break;
-    default:
-      userRole = role; // Use the provided role if it does not match any specific case
-      break;
+// Create user record
+router.post('/', async (req, res) => {
+  try {
+    const user = { ...req.body, active: true };  // Set active to true
+    user.password = bcrypt.hashSync(user.password, 10); // Hash the password
+    const newUser = await User.create(user);
+    res.json(newUser); // Return the created user
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
+});
+
+// Update user data
+router.put('/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+  const updatedUser = req.body;
 
   try {
-    // Creating a new user with the provided data including designation
-    const newUser = await User.create({ username, password, role: userRole, employee_no });
-    res.json(newUser);
+    await User.update(updatedUser, {
+      where: { id: user_id },
+    });
+    res.json({ success: true });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Update a user by employee_no
-router.put("/:employee_no", async (req, res) => {
-  const { employee_no } = req.params;
+// Deactivate user record
+router.put('/:user_id/deactivate', async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    await User.update({ active: false }, {
+      where: { id: user_id },
+    });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete user record
+router.delete('/:user_id', async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    await User.destroy({
+      where: { id: user_id },
+    });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Login user
+
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  try {
-    const user = await User.findOne({ where: { employee_no } });
+    const user = await User.findOne({ where: { username: username } });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    await user.update({ username, password });
-    res.json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+    if (!user) res.json({ error: 'User not found' });
+    
+    bcrypt.compare(password, user.password).then(async(match) => {
+      if (!match)  res.json({ error: 'Wrong username and password combination' });
+      
+      const accessToken = sign(
+        { id: user.id, username: user.username }, 
+        "importantsecret"
+      );
+      res.json(accessToken);
 });
+});
+
+// router.post('/login', async (req, res) => {
+//   const { username, password } = req.body;
+
+//   try {
+//     const user = await User.findOne({ where: { username: username } });
+
+//     if (!user) {
+//       return res.json({ success: false, error: 'User not found' });
+//     }
+
+//     const match = await bcrypt.compare(password, user.password);
+
+//     if (!match) {
+//       return res.json({ success: false, error: 'Wrong username and password combination' });
+//     }
+
+//     const accessToken = sign({ id: user.id, username: user.username }, 
+//       "importantsecret"
+//     );
+
+//     res.json({ success: true, message: 'User logged in', token: accessToken });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: 'An error occurred. Please try again.' });
+//   }
+// });
 
 module.exports = router;

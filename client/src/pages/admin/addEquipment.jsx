@@ -83,8 +83,12 @@ function AddEquipment() {
               <Autocomplete
                 freeSolo
                 options={[
-                  "Bat",
-                  "Ball",
+                  "Size 1 Bat",
+                  "Size 2 Bat",
+                  "Size 3 Bat",
+                  "Junior Ball",
+                  "Senior Ball",
+                  "Soft Ball",
                   "Gloves",
                   "Helmet",
                   "Wicket stumps",

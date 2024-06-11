@@ -24,6 +24,7 @@ async function syncDatabase() {
     await db.Lendings.sync();
     await db.Uniform.sync();
     await db.Purchases.sync();
+    await db.DeletedItem.sync();
 
     console.log('All models were synchronized successfully.');
   } catch (error) {
@@ -72,6 +73,10 @@ app.use("/uniform", uniformRouter);
 //purchase router
 const purchaseRouter = require("./routes/purchasesRoute");
 app.use("/purchase", purchaseRouter);
+
+//deleted item router
+const deletedItemRouter = require("./routes/deletedItemRoute");
+app.use("/deletedItem", deletedItemRouter);
 
 // Sync the database before starting the server
 syncDatabase().then(() => {

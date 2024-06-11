@@ -201,3 +201,55 @@ body {
   border-color: #791414 !important;
   color: white !important;
 }
+
+//Sign In Page CSS
+
+/* Login.css */
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff; /* White background */
+  font-family: Arial, sans-serif;
+}
+
+.loginContainer label {
+  margin-bottom: 10px;
+  font-size: 1.2em; /* Larger font size */
+  color: #7e1917; /* Dark red color */
+}
+
+.loginContainer input {
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: 1em;
+  width: 300px; /* Fixed width */
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+}
+
+.loginContainer button {
+  padding: 10px 20px;
+  background-color: #7e1917; /* Dark red background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.loginContainer button:hover {
+  background-color: #5e1312; /* Darker shade on hover */
+}
+
+.loginContainer img {
+  width: 120px; /* Adjust size as needed */
+  margin-bottom: 20px; /* Space between image and form */
+}
+
+.loginContainer h1 {
+  color: #7e1917; /* Dark red */
+  margin-bottom: 20px;
+}

@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes} from "react-router-dom"; 
+import Login from "./pages/SignIn";
 import Staff from "./pages/admin/Staff";  
 import SignUp from "./pages/SignUp"; 
 import Home from "./pages/admin/Home";
@@ -23,13 +24,15 @@ import editEquipment from "./pages/admin/editEquipment";
 import Lendings from "./pages/admin/Lendings";
 import Purchases from "./pages/admin/purchases";
 import EditPurchases from "./pages/admin/editPurchases";
+import deletedItem from "./pages/admin/deletedItem";
 
 function App() {
   return <div className="App">
     <Router>
     
       <Routes>
-        <Route path="/" exact Component={Home}/>
+        <Route path="/" exact Component={Login}/>
+        <Route path="/home" exact Component={Home}/>
         <Route path="/staff" exact Component={Staff}/>
         <Route path="/SignUp" exact Component={SignUp}/>  
         <Route path="/player" exact Component={Player}/> 
@@ -52,6 +55,7 @@ function App() {
         <Route path="/lendings" exact Component={Lendings} />
         <Route path="/purchases" exact Component={Purchases} />
         <Route path="/editPurchases" exact Component={EditPurchases} />
+        <Route path="/deletedItem" exact Component={deletedItem} />
       </Routes>
     </Router>
   </div>

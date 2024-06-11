@@ -21,7 +21,7 @@ function Staff() {
           name: staff.name,
           designation: staff.designation,
           contact_no: staff.contact_no,
-          username: staff.user?.username, // Assuming 'user' is the alias used in the Sequelize association
+          username: staff.user?.username, // Get username
         }));
         setListOfStaff(transformedData);
       })

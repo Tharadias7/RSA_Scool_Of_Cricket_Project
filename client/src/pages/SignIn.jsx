@@ -1,151 +1,128 @@
-import * as React from "react";
-import { Formik, Form } from "formik";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
+import "../../src/App.css"; 
 import logoImage from "../assets/logo.png";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import * as Yup from "yup";
 
-const defaultTheme = createTheme();
+function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-export default function SignIn() {
-  const [showPassword, setShowPassword] = React.useState(false);
+  let navigate = useNavigate(); // Initialize useNavigate
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const initialValues = {
-    username: "",
-    password: "",
-    showPassword: false,
-  };
-
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
-    password: Yup.string().required("Password is required"),
-  });
-
-  const handleSubmit = (values, { setSubmitting }) => {
-    setTimeout(() => {
-      console.log(values);
-      setSubmitting(false);
-    }, 400);
+  const login = () => {
+    const data = { username: username, password: password };
+    axios.post("http://localhost:3001/user/login", data).then((response) => {
+      if (response.data.error) {
+        alert(response.data.error);
+      } else {
+        sessionStorage.setItem("accessToken", response.data);
+        navigate("/home"); // Use navigate instead of history.push
+      }
+    });
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting,
-      }) => (
-        <Form>
-          <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 15,
-                  padding: 5,
-                  display: "flex",
-                  // border: "1px solid #000",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  src={logoImage}
-                  alt="Lock"
-                  style={{ width: "100px", height: "100px" }}
-                />
-
-                <Typography component="h1" variant="h5">
-                  Sign in
-                </Typography>
-                <Box
-                  component="form"
-                  onSubmit={handleSubmit}
-                  noValidate
-                  sx={{ mt: 1 }}
-                >
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="username"
-                    label="Username"
-                    name="username"
-                    autoComplete="off"
-                    value={values.username}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    autoFocus
-                    error={touched.username && Boolean(errors.username)}
-                    helperText={touched.username && errors.username}
-                  />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type={showPassword ? "text" : "password"}
-                    helperText={touched.password && errors.password}
-                    id="password"
-                    value={values.password}
-                    error={touched.password && Boolean(errors.password)}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    disabled={isSubmitting}
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    {isSubmitting ? "Signing in..." : "Sign In"}
-                  </Button>
-                </Box>
-              </Box>
-            </Container>
-          </ThemeProvider>
-        </Form>
-      )}
-    </Formik>
+    <div className="loginContainer">
+      <img
+            src={logoImage}
+            alt="Lock"
+            style={{ width: "100px", height: "100px" }}
+          />
+      <h1>Login</h1>
+      
+      <label>Username:</label>
+      <input
+        type="text"
+        onChange={(event) => {
+          setUsername(event.target.value);
+        }}
+      />
+      <label>Password:</label>
+      <input
+        type="password"
+        onChange={(event) => {
+          setPassword(event.target.value);
+        }}
+      />
+      <button onClick={login}> Login </button>
+    </div>
   );
 }
+
+export default Login;
+
+
+
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { useNavigate } from "react-router-dom";
+// import Swal from "sweetalert2"; // Import SweetAlert2
+// import '../../src/App.css';  
+// import logoImage from "../assets/logo.png";
+
+// function Login() {
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+//   const navigate = useNavigate(); // Hook for navigation
+
+//   const login = () => {
+//     const data = { username: username, password: password };
+//     axios.post("http://localhost:3001/user/login", data)
+//       .then((response) => {
+//         if (response.data.success) {
+//           navigate('/home'); // Redirect to home page
+//         } else {
+//           Swal.fire({
+//             icon: 'error',
+//             title: 'Failed to login',
+//             text: 'Invalid username or password',
+//           });
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("There was an error!", error);
+//         Swal.fire({
+//           icon: 'error',
+//           title: 'Failed to login',
+//           text: 'Internal server error',
+//         });
+//       });
+//   };
+
+//   return (
+//     <div className="sign_in-container">
+//       <div className="sign_in-top">
+//         <div className="sign_in-logo">
+//           <img
+//             src={logoImage}
+//             alt="Logo"
+//             style={{ width: "100px", height: "100px" }}
+//           />
+//         </div>
+//         <h1 className="sign_in-title">Login</h1>
+//       </div>
+//       <div className="sign_in-form">
+//         <label className="sign_in-label">Username:</label>
+//         <input
+//           type="text"
+//           className="sign_in-input"
+//           onChange={(event) => {
+//             setUsername(event.target.value);
+//           }}
+//         />
+//         <label className="sign_in-label">Password:</label>
+//         <input
+//           type="password"
+//           className="sign_in-input"
+//           onChange={(event) => {
+//             setPassword(event.target.value);
+//           }}
+//         />
+//         <button className="sign_in-button" onClick={login}>Login</button>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Login;

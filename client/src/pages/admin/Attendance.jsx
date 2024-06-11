@@ -4,8 +4,6 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import SideBar from "../../components/SideBar";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
