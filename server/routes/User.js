@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
-const { sign } = require('jsonwebtoken');
+// const { sign } = require('jsonwebtoken');
+// const { validateToken } = require("../middlewares/AuthMiddleware"); 
 
 // Get all user data
 router.get('/', async (req, res) => {
@@ -17,9 +18,9 @@ router.get('/', async (req, res) => {
 });
 
 // Create user record
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const user = { ...req.body, active: true };  // Set active to true
+    const user = { ...req.body, active: true }; // Set active to true
     user.password = bcrypt.hashSync(user.password, 10); // Hash the password
     const newUser = await User.create(user);
     res.json(newUser); // Return the created user
@@ -76,45 +77,25 @@ router.delete('/:user_id', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
+  try {
     const user = await User.findOne({ where: { username: username } });
 
-    if (!user) res.json({ error: 'User not found' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     
-    bcrypt.compare(password, user.password).then(async(match) => {
-      if (!match)  res.json({ error: 'Wrong username and password combination' });
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.status(401).json({ error: 'Wrong username and password combination' });
+    }
       
-      const accessToken = sign(
-        { id: user.id, username: user.username }, 
-        "importantsecret"
-      );
-      res.json(accessToken);
+    res.json({ username: user.username, role: user.role }); // Return only the user role
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
-});
 
-// router.post('/login', async (req, res) => {
-//   const { username, password } = req.body;
-
-//   try {
-//     const user = await User.findOne({ where: { username: username } });
-
-//     if (!user) {
-//       return res.json({ success: false, error: 'User not found' });
-//     }
-
-//     const match = await bcrypt.compare(password, user.password);
-
-//     if (!match) {
-//       return res.json({ success: false, error: 'Wrong username and password combination' });
-//     }
-
-//     const accessToken = sign({ id: user.id, username: user.username }, 
-//       "importantsecret"
-//     );
-
-//     res.json({ success: true, message: 'User logged in', token: accessToken });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: 'An error occurred. Please try again.' });
-//   }
-// });
 
 module.exports = router;

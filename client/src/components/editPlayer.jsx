@@ -7,6 +7,7 @@ import { Button, TextField, Typography, Box, Snackbar, Alert } from '@mui/materi
 import logoImage from '../assets/logo.png';
 import SideBar from './SideBar';
 import Swal from 'sweetalert2';
+import Profile from './profile';
 
 const PlayerSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -22,9 +23,9 @@ const EditPlayer = () => {
   const navigate = useNavigate();
   const { player } = location.state || {};
   const [playerData, setPlayerData] = useState({});
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  // const [openSnackbar, setOpenSnackbar] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState('');
+  // const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +69,9 @@ const EditPlayer = () => {
   return (
     <div style={{ width: '100%', display: 'flex' }}>
       <SideBar />
+      <div className="profileBox" >
+        <Profile />
+      </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Box
           sx={{
@@ -79,7 +83,7 @@ const EditPlayer = () => {
             bgcolor: 'background.paper',
           }}
         >
-          <img src={logoImage} alt="logo" style={{ width: '200px', height: 'auto', marginBottom: '20px' }} />
+          <img src={logoImage} alt="logo" style={{ width: '120px', height: 'auto', marginBottom: '20px' }} />
           <Typography component="h1" variant="h5">
             Edit Player Data
           </Typography>

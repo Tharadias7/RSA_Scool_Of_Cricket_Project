@@ -1,0 +1,47 @@
+/* Staff.css */
+
+.staff-container {
+    width: 100%;
+    display: flex;
+  }
+  
+  .content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .data-grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .add-button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .button {
+    color: #791414 !important;
+    border-color: #791414 !important;
+  }
+  
+  .button.button-margin-right {
+    margin-right: 20px;
+  }
+  

@@ -7,6 +7,7 @@ import { Button, TextField, Typography, Box, MenuItem, Select, FormControl, Inpu
 import logoImage from '../../assets/logo.png';
 import SideBar from '../../components/SideBar';
 import Swal from 'sweetalert2';
+import Profile from '../../components/profile';
 
 const UniformSchema = Yup.object().shape({
   stockId: Yup.string().required('Stock ID is required'),
@@ -64,7 +65,10 @@ const EditUniform = () => {
   return (
     <div style={{ width: '100%', display: 'flex' }}>
       <SideBar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="profileBox">
+        <Profile />
+      </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '40px', }}>
         <Box
           sx={{
             display: 'flex',
@@ -75,7 +79,7 @@ const EditUniform = () => {
             bgcolor: 'background.paper',
           }}
         >
-          <img src={logoImage} alt="logo" style={{ width: '200px', height: 'auto', marginBottom: '20px' }} />
+          <img src={logoImage} alt="logo" style={{ width: '120px', height: 'auto', marginBottom: '20px' }} />
           <Typography component="h1" variant="h5">
             Edit Uniform Data
           </Typography>

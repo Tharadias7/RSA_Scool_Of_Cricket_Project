@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Lendings, Equipment } = require('../models');
+const { Lendings, Equipment, Staff } = require('../models');
 
 // Get all the lending records with associated equipment data
 router.get("/", async (req, res) => {
@@ -85,6 +85,30 @@ router.put("/:id/collect", async (req, res) => {
     res.status(200).json({ message: "Collection recorded successfully" });
   } catch (error) {
     console.error("Error updating collection:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Delete a lending record
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const lending = await Lendings.findOne({ where: { issueId: id } });
+
+    if (!lending) {
+      return res.status(404).json({ message: "Lending record not found" });
+    }
+
+    if (!lending.collectedDate) {
+      return res.status(400).json({ message: "Cannot delete a lending record that has not been collected" });
+    }
+
+    await lending.destroy();
+
+    res.status(200).json({ message: "Lending record deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting lending record:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

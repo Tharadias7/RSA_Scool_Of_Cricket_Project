@@ -6,6 +6,7 @@ import axios from "axios";
 import logoImage from "../assets/logo.png";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
+import Profile from "../components/profile";
 
 function PlayerRegistration() {  
   const initialValues = {
@@ -60,6 +61,9 @@ function PlayerRegistration() {
   return (
     <div className="registerUserPage">
       <SideBar />
+      <div className="profileBox" >
+        <Profile />
+      </div>
       <div className="container">
         <div className="logo-container">
           <img

@@ -29,19 +29,15 @@ router.get("/:employee_no", async (req, res) => {
   }
 });
 
+
 // Create a new coach
 router.post("/", async (req, res) => {
   const { employee_no, qualifications, assigned_team } = req.body;
-  console.log(employee_no, qualifications, assigned_team);
   try {
-    console.log(employee_no);
     const newCoach = await Coach.create({ employee_no, qualifications, assigned_team });
-    
-    console.log("sam");
     res.status(201).json(newCoach);
   } catch (err) {
     res.status(400).json({ message: err.message });
-    console.log(err);
   }
 });
 

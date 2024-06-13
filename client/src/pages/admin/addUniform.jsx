@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import "../../App.css";
+import Profile from "../../components/profile";
 
 function AddUniform() {
   const initialValues = {
@@ -64,6 +65,9 @@ function AddUniform() {
   return (
     <div className="registerUserPage">
       <SideBar />
+      <div className="profile-box">
+        <Profile />
+      </div>
       <div className="container">
         <div className="logo-container">
           <img
