@@ -42,8 +42,13 @@ router.post("/", async (req, res) => {
     await Player.create(player);
     res.json(player);
   } catch (error) {
-    console.error('Error creating player:', error);
-    res.status(500).json({ message: 'Error creating player', error: error.message });
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      console.error('Foreign key constraint error:', error);
+      res.status(400).json({ message: 'Invalid foreign key: employee_no does not exist in coaches table', error: error.message });
+    } else {
+      console.error('Error creating player:', error);
+      res.status(500).json({ message: 'Error creating player', error: error.message });
+    }
   }
 });
 

@@ -20,6 +20,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    paymentYear: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     playerId: {
       type: DataTypes.STRING,
       allowNull: false,

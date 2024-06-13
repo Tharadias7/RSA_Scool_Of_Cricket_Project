@@ -71,6 +71,7 @@ db.Coach.belongsTo(db.Staff, { foreignKey: 'employee_no'});
 db.DeletedItem.belongsTo(db.Equipment, { foreignKey: 'stockId' });
 db.Equipment.hasMany(db.DeletedItem, { foreignKey: 'stockId' });
 
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 module.exports = db;

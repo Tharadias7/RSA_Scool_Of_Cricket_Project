@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import SideBar from "../../components/SideBar";
 import { DataGrid } from "@mui/x-data-grid";
@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../../App.css";
 import Profile from "../../components/profile";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import DownloadIcon from '@mui/icons-material/Download';
 
 function Uniform() {
   const [listOfUniforms, setListOfUniforms] = useState([]);
@@ -19,6 +22,7 @@ function Uniform() {
   const [quantity, setQuantity] = useState("");
   const [playerId, setPlayerId] = useState("");
   const navigate = useNavigate();
+  const pdfRef = useRef();
 
   useEffect(() => {
     axios.get("http://localhost:3001/uniform")
@@ -151,6 +155,23 @@ function Uniform() {
     }
   ];
 
+  const downloadPDF = () => {
+    const input = pdfRef.current;
+    html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4', true);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 30;
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        pdf.save('uniform.pdf');
+    });
+};
+
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <SideBar />
@@ -168,7 +189,11 @@ function Uniform() {
           marginTop: "60px",
           overflow: "hidden",
         }}
+        ref={pdfRef}
       >
+      <div className='topic' style={{marginBottom: '40px'}}>
+      Uniform Inventory Records 
+      </div>
         <div
           style={{
             display: "flex",
@@ -191,6 +216,14 @@ function Uniform() {
             onClick={handleAddUniform}
           >
             Add
+          </Button>
+          <Button 
+          className='button button-margin-right'
+          variant="outlined"
+          onClick={downloadPDF}
+          startIcon={<DownloadIcon />}
+          >
+          Uniform Report 
           </Button>
         </div>
         <div style={{ height: 400, width: "auto", margin: "20px" }}>

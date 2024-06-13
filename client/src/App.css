@@ -26,6 +26,11 @@ body {
   margin-right: 20px;
 }
 
+.topic {
+  font-size: 36px;
+  color: #791414
+}
+
 /* REGISTER USER, REGISTER PLAYER, ADD EQUIPMENT PAGE CSS */
 
 .logo-container {

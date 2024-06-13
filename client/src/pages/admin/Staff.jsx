@@ -80,7 +80,7 @@ function Staff() {
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'designation', headerName: 'Designation', width: 200 },
     { field: 'contact_no', headerName: 'Contact Number', width: 200 },
-    //{ field: 'username', headerName: 'Username', width: 200 },
+    { field: 'username', headerName: 'Username', width: 200 }, // Add username column
     {
       field: 'actions',
       headerName: 'Actions',
@@ -128,7 +128,7 @@ function Staff() {
             </Link>
           )}
         </div>
-        <div style={{ height: 400, width: 'auto' }}>
+        <div style={{ height: 400, width: 'auto' , marginLeft: '40px'}}>
           <DataGrid
             rows={listOfStaff}
             columns={columns}
@@ -143,4 +143,3 @@ function Staff() {
 }
 
 export default Staff;
-

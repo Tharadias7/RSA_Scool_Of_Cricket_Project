@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import SideBar from "../../components/SideBar";
 import Profile from "../../components/profile";
 import "../../App.css";
+import Button from "@mui/material/Button";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import DownloadIcon from '@mui/icons-material/Download';
 
 function DeletedItems() {
   const [listOfDeletedItems, setListOfDeletedItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const pdfRef = useRef();
 
   useEffect(() => {
     const fetchDeletedItems = async () => {
@@ -46,6 +51,23 @@ function DeletedItems() {
     { field: "description", headerName: "Reason for Removal", width: 250 },
   ];
 
+  const downloadPDF = () => {
+    const input = pdfRef.current;
+    html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4', true);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 30;
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        pdf.save('purchases.pdf');
+    });
+};
+
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <SideBar />
@@ -64,7 +86,19 @@ function DeletedItems() {
           overflow: "hidden",
         }}
       >
-        <div style={{ height: 400, width: "auto", margin: "20px" }}>
+      <Button
+      className="button button-margin-right"
+        variant="outlined"
+        startIcon={<DownloadIcon />}
+        onClick={downloadPDF}
+        style={{ marginBottom: "20px" }}
+      >
+      Deleted Item Report  
+      </Button>
+<div ref={pdfRef}>
+        <div className="topic" style={{marginBottom: '40px'}}>
+        Deleted Item Records
+      </div>
           {loading ? (
             <p>Loading...</p>
           ) : (

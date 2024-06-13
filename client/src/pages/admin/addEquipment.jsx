@@ -100,7 +100,6 @@ function AddEquipment() {
                   "Cricket nets",
                   "Mobile Cages",
                   "Cricket Bag",
-                  "Grip Tape",
                   "Abdo Guard",
                   "Cricket Pads",
                   "Cricket Boots",
@@ -120,16 +119,16 @@ function AddEquipment() {
               <Autocomplete
                 freeSolo
                 options={[
-                  "Adidas",
-                  "Nike",
-                  "Puma",
-                  "Reebok",
-                  "GM",
-                  "SS",
-                  "SG",
-                  "Gray-Nicolls",
                   "Kookaburra",
+                  "Gray-Nicolls",
+                  "MRF",
+                  "Reebok",
                   "New Balance",
+                  "Affinity Cricket",
+                  "Aero Cricket",
+                  "Aldredcricketbats",
+                  "B3 Cricket",
+                  "Bellinghamandsmith",
                 ]}
                 onChange={(event, value) => setFieldValue("brand", value)}
                 renderInput={(params) => (
