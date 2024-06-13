@@ -6,6 +6,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import "../../App.css";
+import Profile from "../../components/profile";
 
 function Purchases() {
   const [listOfPurchases, setListOfPurchases] = useState([]);
@@ -93,33 +94,14 @@ function Purchases() {
     { field: "playerId", headerName: "Player ID", width: 150 },
     { field: "unitPrice", headerName: "Unit Price", width: 150 },
     { field: "quantity", headerName: "Quantity", width: 150 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 200,
-      renderCell: (params) => (
-        <>
-          <Button
-            variant="outlined"
-            onClick={() => handleEdit(params.row)}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => handleDelete(params.row.id)}
-            style={{ marginLeft: '10px' }}
-          >
-            Delete
-          </Button>
-        </>
-      ),
-    }
   ];
 
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <SideBar />
+      <div className="profileBox">
+        <Profile />
+      </div>
       <div
         style={{
           flex: 1,
@@ -128,6 +110,7 @@ function Purchases() {
           alignItems: "center",
           justifyContent: "center",
           marginLeft: "20px",
+          marginTop: "60px",
           overflow: "hidden",
         }}
       >

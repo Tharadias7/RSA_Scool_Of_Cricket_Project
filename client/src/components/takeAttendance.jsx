@@ -50,12 +50,16 @@ const TakeAttendance = () => {
   };
 
   const handleScanResult = async (playerId) => {
+    if (!playerId) return;
+
+    stopScanning(); // Disable the scanner after a successful scan to prevent multiple scans
+
     try {
       const playerResponse = await axios.get(`http://localhost:3001/player/${playerId}`);
       const playerData = playerResponse.data;
 
       if (playerData && playerData.active) {
-        const attendanceResponse = await axios.get(`http://localhost:3001/attendance/check/${playerId}`);
+        const attendanceResponse = await axios.get(`http://localhost:3001/attendance/${playerId}/${new Date().toISOString().split('T')[0]}`);
         const attendanceData = attendanceResponse.data;
 
         if (!attendanceData.recorded) {
@@ -72,12 +76,16 @@ const TakeAttendance = () => {
             title: 'Attendance Recorded Successfully',
             showConfirmButton: false,
             timer: 1500
+          }).then(() => {
+            startScanning(); // Re-enable the scanner after displaying the success message
           });
         } else {
           Swal.fire({
             icon: 'warning',
             title: 'Attendance Already Recorded',
             text: `${playerId} player's attendance is already recorded for today.`,
+          }).then(() => {
+            startScanning(); // Re-enable the scanner after displaying the warning message
           });
         }
       } else {
@@ -85,6 +93,8 @@ const TakeAttendance = () => {
           icon: 'error',
           title: 'Not a Valid Player',
           text: 'The player ID is invalid or inactive. Please scan a valid and active player ID.'
+        }).then(() => {
+          startScanning(); // Re-enable the scanner after displaying the error message
         });
       }
     } catch (error) {
@@ -92,7 +102,9 @@ const TakeAttendance = () => {
       Swal.fire({
         icon: 'error',
         title: 'Failed to Record the Attendance',
-        text: 'This player already has attendance recorded for today'
+        text: error.response?.data?.message || 'Something went wrong!'
+      }).then(() => {
+        startScanning(); // Re-enable the scanner after displaying the error message
       });
     }
   };
@@ -115,6 +127,7 @@ const TakeAttendance = () => {
 }
 
 export default TakeAttendance;
+
 
 
 // import React, { useEffect, useState } from 'react';

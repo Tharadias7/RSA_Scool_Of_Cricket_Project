@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Button, TextField, Typography, Box, Snackbar, Alert } from '@mui/material';
 import logo from '../../assets/logo.png';
 import SideBar from '../../components/SideBar';
+import Profile from '../../components/profile';
 
 const StaffSchema = Yup.object().shape({
   employee_no: Yup.string().required('Employee No is required'),
@@ -93,7 +94,10 @@ const EditStaff = () => {
   return (
     <div style={{ width: '100%', display: "flex" }}>
       <SideBar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="profileBox" >
+        <Profile />
+      </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '80px' }}>
         <Box
           sx={{
             display: 'flex',
@@ -104,7 +108,7 @@ const EditStaff = () => {
             bgcolor: 'background.paper',
           }}
         >
-          <img src={logo} alt="logo" style={{ width: '200px', height: 'auto', marginBottom: '20px' }} />
+          <img src={logo} alt="logo" style={{ width: '120px', height: 'auto', marginBottom: '20px' }} />
           <Typography component="h1" variant="h5">
             Edit Staff Data
           </Typography>

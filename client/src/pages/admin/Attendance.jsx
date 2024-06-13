@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Profile from "../../components/profile";
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -22,7 +23,7 @@ const columns = [
     [...Array(5).keys()].map((week) => ({
       field: `${month.slice(0, 3)}W${week + 1}`,
       headerName: `${month.slice(0, 3)}-W${week + 1}`,
-      width: 75,  // Adjust width as needed
+      width: 75,  
       headerClassName: 'super-app-theme--header',
       renderCell: (params) => (
         <div style={{ color: params.value === true ? 'green' : 'inherit' }}>
@@ -67,6 +68,9 @@ export default function DataGridDemo() {
         const players = playersResponse.data;
         const attendanceRecords = attendanceResponse.data.filter(record => new Date(record.date).getFullYear() === year);
 
+        console.log("Players:", players); // Debugging log
+        console.log("Attendance Records:", attendanceRecords); // Debugging log
+
         const rowsData = players.map(player => {
           const playerAttendance = attendanceRecords.filter(record => record.playerId === player.playerId);
           const attendanceData = playerAttendance.reduce((acc, record) => {
@@ -74,6 +78,8 @@ export default function DataGridDemo() {
             acc[weekField] = record.attendanceStatus;
             return acc;
           }, {});
+
+          console.log("Attendance Data for Player:", player.playerId, attendanceData); // Debugging log
 
           return {
             id: player.playerId,
@@ -83,6 +89,7 @@ export default function DataGridDemo() {
           };
         });
 
+        console.log("Rows Data:", rowsData); // Debugging log
         setRows(rowsData);
       } catch (error) {
         console.error('Error fetching data', error);
@@ -91,7 +98,6 @@ export default function DataGridDemo() {
 
     fetchData();
   }, [year]);
-
 
   const handleAddAttendance = () => {
     navigate('/takeAttendance');
@@ -104,6 +110,9 @@ export default function DataGridDemo() {
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <SideBar />
+      <div className="profileBox" >
+        <Profile />
+      </div>
       <div
         style={{
           flex: 1,
@@ -120,7 +129,7 @@ export default function DataGridDemo() {
             display: "flex",
             width: "100%",
             marginBottom: "20px",
-            marginTop: "20px",
+            marginTop: "60px",
             justifyContent: "space-between",
           }}
         >

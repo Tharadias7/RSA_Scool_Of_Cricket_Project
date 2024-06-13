@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Purchases } = require('../models');
+const { Purchases, Uniform } = require('../models');
+const db = require('../models');
 
 // Get all purchases records
 router.get('/', async (req, res) => {
@@ -12,107 +13,55 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Add purchase record
+// Create a new purchase record
 router.post('/', async (req, res) => {
-  try {
-    const purchase = await Purchases.create(req.body);
-    res.json(purchase);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+  const { stockId, playerId, quantity, date, unitPrice } = req.body;
 
-// Delete purchase record
-router.delete('/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const result = await Purchases.destroy({ where: { transactionId: id } });
-    if (result) {
-      res.status(200).json({ message: 'Purchase deleted successfully' });
-    } else {
-      res.status(404).json({ message: 'Purchase not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting purchase', error });
-  }
-});
+  console.log("Received Payload:", req.body); // Log the incoming payload
 
-// Edit (update) purchase record
-router.put('/:id', async (req, res) => {
+  if (!stockId || !playerId || !quantity || !date || !unitPrice) {
+    console.log("Validation Error: Missing required fields");
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  if (isNaN(quantity) || isNaN(parseFloat(unitPrice))) {
+    console.log("Validation Error: Quantity and unit price must be numbers");
+    return res.status(400).json({ message: 'Quantity and unit price must be numbers' });
+  }
+
   try {
-    const id = req.params.id;
-    const [updated] = await Purchases.update(req.body, {
-      where: { transactionId: id }
+    // Start a transaction to ensure both operations (purchase creation and stock update) are atomic
+    await db.sequelize.transaction(async (t) => {
+      // Create a new purchase record
+      const newPurchase = await Purchases.create({
+        stockId,
+        playerId,
+        quantity,
+        date,
+        unitPrice: parseFloat(unitPrice)
+      }, { transaction: t });
+
+      // Update the current stock in the Uniform table
+      const uniform = await Uniform.findByPk(stockId, { transaction: t });
+      if (!uniform) {
+        console.log("Error: Uniform not found");
+        throw new Error('Uniform not found');
+      }
+
+      if (uniform.currentStock < quantity) {
+        console.log("Error: Not enough stock available");
+        throw new Error('Not enough stock available');
+      }
+
+      uniform.currentStock -= quantity;
+      await uniform.save({ transaction: t });
+
+      res.status(201).json(newPurchase);
     });
-    if (updated) {
-      const updatedPurchase = await Purchases.findOne({ where: { transactionId: id } });
-      res.status(200).json({ message: 'Purchase updated successfully', purchase: updatedPurchase });
-    } else {
-      res.status(404).json({ message: 'Purchase not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating purchase', error });
+  } catch (err) {
+    console.error("Error during transaction:", err.message);
+    res.status(400).json({ message: err.message });
   }
 });
 
 module.exports = router;
-
-
-// const express = require('express');
-// const router = express.Router();
-// const { Purchases } = require('../models');
-
-// // Get all purchases records
-// router.get('/', async (req, res) => {
-//   try {
-//     const purchases = await Purchases.findAll();
-//     res.json(purchases);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
-
-// // Add purchase record
-// router.post('/', async (req, res) => {
-//   try {
-//     const purchase = await Purchases.create(req.body);
-//     res.json(purchase);
-//   } catch (error) {
-//     res.status(500).send(error);
-//   }
-// });
-
-// // Delete purchase record
-// router.delete('/:id', async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const result = await Purchases.destroy({ where: { transactionId: id } });
-//     if (result) {
-//       res.status(200).json({ message: 'Purchase deleted successfully' });
-//     } else {
-//       res.status(404).json({ message: 'Purchase not found' });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error deleting purchase', error });
-//   }
-// });
-
-// // Edit (update) purchase record
-// router.put('/:id', async (req, res) => {
-//   try {
-//     const id = req.params.id;
-//     const [updated] = await Purchases.update(req.body, {
-//       where: { transactionId: id }
-//     });
-//     if (updated) {
-//       const updatedPurchase = await Purchases.findOne({ where: { transactionId: id } });
-//       res.status(200).json({ message: 'Purchase updated successfully', purchase: updatedPurchase });
-//     } else {
-//       res.status(404).json({ message: 'Purchase not found' });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error updating purchase', error });
-//   }
-// });
-
-// module.exports = router;

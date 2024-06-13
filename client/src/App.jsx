@@ -25,6 +25,7 @@ import Lendings from "./pages/admin/Lendings";
 import Purchases from "./pages/admin/purchases";
 import EditPurchases from "./pages/admin/editPurchases";
 import deletedItem from "./pages/admin/deletedItem";
+import editLendings from "./pages/admin/editLendings";
 
 function App() {
   return <div className="App">
@@ -56,6 +57,7 @@ function App() {
         <Route path="/purchases" exact Component={Purchases} />
         <Route path="/editPurchases" exact Component={EditPurchases} />
         <Route path="/deletedItem" exact Component={deletedItem} />
+        <Route path="/editLendings" exact Component={editLendings} />
       </Routes>
     </Router>
   </div>

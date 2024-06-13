@@ -194,15 +194,6 @@ body {
   color: white !important;
 }
 
-//ISSUE ITEM POP UP MODEL CSS
-
-.issueConBtn{
-  background-color: #791414 !important;
-  border-color: #791414 !important;
-  color: white !important;
-}
-
-//Sign In Page CSS
 
 /* Login.css */
 .loginContainer {
@@ -252,4 +243,75 @@ body {
 .loginContainer h1 {
   color: #7e1917; /* Dark red */
   margin-bottom: 20px;
+}
+
+
+/* PROFILE COMPONENT CSS */
+
+.profile-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: inline-block;
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.profile-icon {
+  font-size: 30px;
+  margin-right: 10px;
+}
+
+.profile-name {
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.profile-arrow {
+  font-size: 12px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1;
+  width: 200px;
+  padding: 10px 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+  background-color: #791414;
+  color: #ffffff;
+}
+
+.dropdown-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+//HOME PAGE CSS
+
+.profileBox {
+  margin-left: auto;
+  margin-bottom: 40px;
 }

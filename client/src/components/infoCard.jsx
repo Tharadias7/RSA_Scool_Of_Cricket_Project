@@ -5,16 +5,18 @@ import Paper from '@mui/material/Paper';
 export default function InfoCard({ title, value, bgColor }) {
   return (
     <Paper sx={{ 
-      backgroundColor: bgColor, 
+      backgroundColor: '#ffffff', 
       padding: 2, 
       margin: 1, 
+      border: 2,
+      borderColor: '#791414',
       borderRadius: 2, 
-      textAlign: 'center', 
+      textAlign: 'center',
       width: 200, // Fixed width
-      height: 100 // Fixed height
+      height: 120 // Fixed height
     }}>
-      <Typography >{title}</Typography>
-      <Typography >{value}</Typography>
+      <Typography variant="h6" fontWeight="bold">{title}</Typography>
+      <Typography variant="body1" fontWeight="bold">{value}</Typography>
     </Paper>
   );
 }

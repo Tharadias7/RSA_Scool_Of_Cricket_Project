@@ -8,6 +8,7 @@ import axios from "axios";
 import logoImage from "../assets/logo.png";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
+import Profile from "../components/profile";
 
 function SignUp() {
   const [des, setDes] = React.useState("");
@@ -49,9 +50,9 @@ function SignUp() {
   });
 
   const onSubmit = async (data, { setSubmitting }) => {
-    try {
       setSubmitting(true);
 
+try{
       const staffData = {
         name: data.name,
         designation: des,
@@ -61,7 +62,8 @@ function SignUp() {
         active: true,  // Set active to true
       };
 
-      const response = await axios.post("http://localhost:3001/staff", staffData);
+      const response = await axios.
+      post("http://localhost:3001/staff", staffData, );
       console.log("Staff created successfully");
 
       const employeeNo = response.data.employee_no;  // Get the newly created employee_no
@@ -73,7 +75,7 @@ function SignUp() {
         employee_no: employeeNo,  // Use the newly created employee_no
       };
 
-      await axios.post("http://localhost:3001/user", userData);
+      await axios.post("http://localhost:3001/user", userData, );
       console.log("User created successfully");
 
       if (des === "coach") {
@@ -83,7 +85,7 @@ function SignUp() {
           assigned_team: data.assigned_team,
         };
 
-        await axios.post("http://localhost:3001/coach", coachData);
+        await axios.post("http://localhost:3001/coach", coachData, );
         console.log("Coach created successfully");
       }
 
@@ -113,6 +115,9 @@ function SignUp() {
   return (
     <div className="registerUserPage">
       <SideBar />
+      <div className="profileBox" >
+        <Profile />
+      </div>
       <div className="container">
         <div className="logo-container">
           <img
