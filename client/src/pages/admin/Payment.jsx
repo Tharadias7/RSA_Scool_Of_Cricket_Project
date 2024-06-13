@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Profile from "../../components/profile";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -41,26 +44,28 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
+
 export default function Payment() {
   const [rows, setRows] = useState([]);
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const navigate = useNavigate();
+  const pdfRef = useRef();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const playersResponse = await axios.get('http://localhost:3001/player');
-        const paymentsResponse = await axios.get('http://localhost:3001/payment');
+        const paymentsResponse = await axios.get(`http://localhost:3001/payment/${year}`);
         const players = playersResponse.data;
-        const paymentRecords = paymentsResponse.data.filter(record => new Date(record.date).getFullYear().toString() === year);
-    
+        const paymentRecords = paymentsResponse.data;
+
         const rowsData = players.map(player => {
           const playerPayments = paymentRecords.filter(record => record.playerId === player.playerId);
           const paymentData = playerPayments.reduce((acc, record) => {
             acc[record.month] = { amount: record.amount, date: record.date };
             return acc;
           }, {});
-    
+
           return {
             id: player.playerId,
             playerId: player.playerId,
@@ -68,7 +73,7 @@ export default function Payment() {
             ...paymentData,
           };
         });
-    
+
         setRows(rowsData);
       } catch (error) {
         console.error('Error fetching data', error);
@@ -78,41 +83,12 @@ export default function Payment() {
     fetchData();
   }, [year]);
 
-  const handleEditPayment = () => {
-    // Handle edit payment logic here
-  };
-
   const handleAddPayment = () => {
     navigate('/collectPayment');
   };
 
   const handleYearChange = (event, newValue) => {
     setYear(newValue ? newValue : '');
-  };
-
-  const handleCellEditCommit = async (params) => {
-    const { id, field, value } = params;
-    const updatedRows = rows.map(row => {
-      if (row.id === id) {
-        return {
-          ...row,
-          [field]: { ...row[field], amount: value },
-        };
-      }
-      return row;
-    });
-    setRows(updatedRows);
-
-    try {
-      await axios.put(`http://localhost:3001/payment/${id}`, {
-        playerId: id,
-        month: field,
-        amount: value,
-        date: updatedRows.find(row => row.id === id)[field]?.date || new Date().toISOString(),
-      });
-    } catch (error) {
-      console.error('Error updating payment', error);
-    }
   };
 
   const processRowUpdate = async (updatedRow, originalRow) => {
@@ -134,10 +110,27 @@ export default function Payment() {
     console.error('Error processing row update', error);
   };
 
+  const downloadPDF = () => {
+    const input = pdfRef.current;
+    html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4', true);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 30;
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        pdf.save('payment.pdf');
+    });
+};
+
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <SideBar />
-      <div className="profileBox" >
+      <div className="profileBox">
         <Profile />
       </div>
       <div
@@ -151,7 +144,11 @@ export default function Payment() {
           marginTop: "40px",
           overflow: "hidden",
         }}
+        ref={pdfRef}
       >
+      <div className='topic'>
+      Monthly Payment Records 
+      </div>
         <div
           style={{
             display: "flex",
@@ -180,8 +177,16 @@ export default function Payment() {
             >
               Add
             </Button>
+            <Button 
+          className='button button-margin-right'
+          variant="outlined"
+          onClick={downloadPDF}
+          startIcon={<DownloadIcon />}
+          >
+          Payment Report 
+          </Button>
             <br></br><br></br>
-            <div style={{fontSize: "12px", color: "#791414"}}>*To edit a cell, doublr click or press 'Enter' </div>
+            {/* <div style={{fontSize: "12px", color: "#791414"}}>*To edit a cell, double click or press 'Enter' </div> */}
           </div>
         </div>
         <Box sx={{ height: 520, width: '100%', overflowX: 'auto' }} className="dataGridContainer">

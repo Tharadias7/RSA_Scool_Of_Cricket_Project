@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import SideBar from "../../components/SideBar";
 import { DataGrid } from "@mui/x-data-grid";
@@ -20,6 +20,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../../App.css";
 import Profile from "../../components/profile";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import DownloadIcon from '@mui/icons-material/Download';
 
 function Equipment() {
   const [listOfEquipments, setListOfEquipments] = useState([]);
@@ -32,6 +35,8 @@ function Equipment() {
   const [currentStockId, setCurrentStockId] = useState(null);
   const [totalItems, setTotalItems] = useState(0);
   const navigate = useNavigate();
+  const pdfRef = useRef();
+
 
   useEffect(() => {
     refreshEquipments();
@@ -139,7 +144,7 @@ function Equipment() {
   };
 
   const columns = [
-    { field: "stockId", headerName: "Stock ID", width: 100 },
+    // { field: "stockId", headerName: "Stock ID", width: 100 },
     { field: "item", headerName: "Item", width: 125 },
     { field: "brand", headerName: "Brand", width: 150 },
     { field: "totalItems", headerName: "Total Items", width: 100 },
@@ -180,6 +185,23 @@ function Equipment() {
     },
   ];
 
+  const downloadPDF = () => {
+    const input = pdfRef.current;
+    html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4', true);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 30;
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        pdf.save('equipment.pdf');
+    });
+};
+
   return (
     <div style={{ width: "100%", display: "flex" }}>
       <SideBar />
@@ -197,7 +219,11 @@ function Equipment() {
           marginTop: "60px",
           overflow: "hidden",
         }}
+        ref={pdfRef}
       >
+      <div className='topic' style={{marginBottom: '40px'}}>
+      Sport Equipment Records 
+      </div>
         <div
           style={{
             display: "flex",
@@ -229,6 +255,14 @@ function Equipment() {
           >
             Removed Items
           </Button>
+          <Button 
+          className='button button-margin-right'
+          variant="outlined"
+          onClick={downloadPDF}
+          startIcon={<DownloadIcon />}
+          >
+          Equipment Report 
+          </Button>
         </div>
         <div style={{ height: 400, width: "auto", margin: "20px" }}>
           <DataGrid
@@ -240,6 +274,7 @@ function Equipment() {
           />
         </div>
       </div>
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -329,6 +364,23 @@ function DeleteModal({ open, handleClose, stockId, totalItems, refreshEquipments
     console.log(payload);
   
     try {
+      // Fetch the current stock amount for the given stockId
+      const stockResponse = await axios.get(`http://localhost:3001/equipment/${stockId}`);
+      const availableStock = stockResponse.data.availableItems; // Adjust according to your API response structure
+  
+      // Check if the entered amount is greater than the available stock
+      if (payload.amount > availableStock) {
+        handleClose();
+        Swal.fire({
+          title: "Error!",
+          text: "Entered amount is larger than available items in stock",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+  
+      // Proceed with deletion if the amount is valid
       await axios.post("http://localhost:3001/deletedItem", payload);
       console.log("log 2");
       await axios.put("http://localhost:3001/equipment/update-equipment", payload);
@@ -353,6 +405,7 @@ function DeleteModal({ open, handleClose, stockId, totalItems, refreshEquipments
       console.error("Error deleting equipment:", error);
     }
   };
+  
 
   return (
     <Modal

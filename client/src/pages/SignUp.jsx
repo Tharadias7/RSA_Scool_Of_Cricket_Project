@@ -33,84 +33,98 @@ function SignUp() {
   };
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
-    employee_no: Yup.string(),
-    contact_no: Yup.string().required("Contact number is required"),
-    designation: Yup.string(),
-    qualification: Yup.string(),
-    assigned_team: Yup.string(),
-    username: Yup.string()
-      .required("Username is required")
-      .max(25, "Username must be less than 26 characters"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(8, "Password must be at least 8 characters")
-      .max(25, "Password must be less than 26 characters"),
-    confirm_password: Yup.string().required("Confirm password is required"),
-  });
+  name: Yup.string().required("Name is required"),
+  employee_no: Yup.string(),
+  contact_no: Yup.string()
+    .matches(/^\d{10}$/, "Contact number should be 10 digits")
+    .required("Contact number is required"),
+  designation: Yup.string(),
+  qualification: Yup.string(),
+  assigned_team: Yup.string(),
+  username: Yup.string()
+    .required("Username is required")
+    .max(25, "Username must be less than 26 characters"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(25, "Password must be less than 26 characters")
+    .matches(/[A-Z]/, "Password should include at least one uppercase letter")
+    .matches(/[a-z]/, "Password should include at least one lowercase letter")
+    .matches(/\d/, "Password should include at least one number")
+    .matches(/[\W_]/, "Password should include at least one special symbol"),
+  confirm_password: Yup.string()
+    .required("Confirm password is required")
+    .oneOf([Yup.ref('password'), null], "Confirm password should be the same as the password"),
+});
 
-  const onSubmit = async (data, { setSubmitting }) => {
-      setSubmitting(true);
+const onSubmit = async (data, { setSubmitting }) => {
+  setSubmitting(true);
 
-try{
-      const staffData = {
-        name: data.name,
-        designation: des,
-        contact_no: data.contact_no,
-        qualification: data.qualification,
+  try {
+    const staffData = {
+      name: data.name,
+      designation: des,
+      contact_no: data.contact_no,
+      qualification: data.qualification,
+      assigned_team: data.assigned_team,
+      active: true,
+    };
+
+    const staffResponse = await axios.post("http://localhost:3001/staff", staffData);
+    console.log("Staff created successfully");
+
+    const employeeNo = staffResponse.data.employee_no;
+
+    const userData = {
+      username: data.username,
+      password: data.password,
+      role: des,
+      employee_no: employeeNo,
+    };
+
+    await axios.post("http://localhost:3001/user", userData);
+    console.log("User created successfully");
+
+    if (des === "coach") {
+      const coachData = {
+        employee_no: employeeNo,
+        qualifications: data.qualification,
         assigned_team: data.assigned_team,
-        active: true,  // Set active to true
       };
 
-      const response = await axios.
-      post("http://localhost:3001/staff", staffData, );
-      console.log("Staff created successfully");
+      await axios.post("http://localhost:3001/coach", coachData);
+      console.log("Coach created successfully");
+    }
 
-      const employeeNo = response.data.employee_no;  // Get the newly created employee_no
+    Swal.fire({
+      icon: "info",
+      title: "Success",
+      iconColor: "green",
+      confirmButtonColor: "#791414",
+      text: "Staff registration successful",
+    });
+  } catch (error) {
+    console.log("Error creating user or staff", error);
 
-      const userData = {
-        username: data.username,
-        password: data.password,
-        role: des,
-        employee_no: employeeNo,  // Use the newly created employee_no
-      };
-
-      await axios.post("http://localhost:3001/user", userData, );
-      console.log("User created successfully");
-
-      if (des === "coach") {
-        const coachData = {
-          employee_no: employeeNo,
-          qualifications: data.qualification,
-          assigned_team: data.assigned_team,
-        };
-
-        await axios.post("http://localhost:3001/coach", coachData, );
-        console.log("Coach created successfully");
-      }
-
-      // Show success message using SweetAlert2
+    if (error.response && error.response.status === 409) {
       Swal.fire({
-        icon: "info",
-        title: "Success",
-        iconColor: "green",
+        icon: "error",
+        title: "Error",
         confirmButtonColor: "#791414",
-        text: "Staff registration successful",
+        text: "Username already in use",
       });
-    } catch (error) {
-      console.log("Error creating user or staff", error);
-
-      // Show error message using SweetAlert2
+    } else {
       Swal.fire({
         icon: "error",
         title: "Error",
         confirmButtonColor: "#791414",
         text: "Staff registration failed",
       });
-    } finally {
-      setSubmitting(false);
     }
-  };
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <div className="registerUserPage">
@@ -210,7 +224,7 @@ try{
               component="span"
               style={{ color: "red" }}
             />
-            <Field id="inputRegisterUser" name="password" />
+            <Field id="inputRegisterUser" name="password" type="password"/>
 
             <label>Confirm Password</label>
             <ErrorMessage
@@ -218,7 +232,7 @@ try{
               component="span"
               style={{ color: "red" }}
             />
-            <Field id="inputRegisterUser" name="confirm_password" />
+            <Field id="inputRegisterUser" name="confirm_password" type="password"/>
             <div className="button-container">
               <button type="submit" style={{ width: "50%" }}>
                 Register

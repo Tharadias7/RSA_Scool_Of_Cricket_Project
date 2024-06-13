@@ -94,8 +94,6 @@ function AddUniform() {
                   "Jersey",
                   "Pants",
                   "Cap",
-                  "Socks",
-                  "Shoes",
                 ]}
                 onChange={(event, value) => setFieldValue("item", value)}
                 renderInput={(params) => (

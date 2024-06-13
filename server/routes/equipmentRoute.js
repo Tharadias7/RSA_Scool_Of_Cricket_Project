@@ -130,5 +130,23 @@ router.get("/options", async (req, res) => {
   }
 });
 
+// Get equipment by stockId
+router.get("/:stockId", async (req, res) => {
+  const { stockId } = req.params;
+
+  try {
+    const equipment = await Equipment.findByPk(stockId);
+
+    if (equipment) {
+      res.json(equipment);
+    } else {
+      res.status(404).json({ message: "Equipment not found" });
+    }
+  } catch (err) {
+    console.error("Error fetching equipment:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
 module.exports = router;
 

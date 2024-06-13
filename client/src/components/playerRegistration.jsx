@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import SideBar from "./SideBar";
@@ -7,8 +7,11 @@ import logoImage from "../assets/logo.png";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
 import Profile from "../components/profile";
+import { subYears } from 'date-fns';
 
 function PlayerRegistration() {  
+  const [coaches, setCoaches] = useState([]);
+
   const initialValues = {
     name: "",
     date_of_birth: "",
@@ -20,11 +23,20 @@ function PlayerRegistration() {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    date_of_birth: Yup.date().required("Date of birth is required"),
-    contact_no: Yup.string().required("Contact number is required"),
+    date_of_birth: Yup.date()
+      .required("Date of birth is required")
+      .max(subYears(new Date(), 7), "Minimum player age is 7 years old"),
+    contact_no: Yup.string()
+      .matches(/^\d{10}$/, "Contact number must be exactly 10 digits")
+      .required("Contact number is required"),
     address: Yup.string().required("Address is required"),
     employee_no: Yup.string().required("Assigned coach is required"),
-    joined_date: Yup.date().required("Joined date is required"),
+    joined_date: Yup.date()
+      .required("Joined date is required")
+      .when(
+        'date_of_birth',
+        (date_of_birth, schema) => date_of_birth && schema.min(date_of_birth, 'Joined date must be later than date of birth')
+      ),
   });
 
   const onSubmit = async (data, { setSubmitting }) => {
@@ -57,6 +69,19 @@ function PlayerRegistration() {
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    const fetchCoaches = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/staff/coaches");
+        setCoaches(response.data);
+      } catch (error) {
+        console.log("Error fetching coaches", error);
+      }
+    };
+
+    fetchCoaches();
+  }, []);
 
   return (
     <div className="registerUserPage">
@@ -119,7 +144,14 @@ function PlayerRegistration() {
               component="span"
               style={{ color: "red" }}
             />
-            <Field id="inputRegisterUser" name="employee_no" />
+            <Field as="select" id="inputRegisterUser" name="employee_no">
+              <option value="" label="Select coach" />
+              {coaches.map((coach) => (
+                <option key={coach.employee_no} value={coach.employee_no}>
+                  {coach.employee_no} - {coach.name}
+                </option>
+              ))}
+            </Field>
 
             <label>Joined Date</label>
             <ErrorMessage
